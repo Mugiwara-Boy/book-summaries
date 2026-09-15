@@ -1,0 +1,628 @@
+<title>Deep Work</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+  :root {
+    --paper: #EDEEE8;
+    --surface: #F8F8F3;
+    --ink: #1C2321;
+    --ink-soft: #4E564F;
+    --ink-faint: #7C837A;
+    --deep: #2E4057;
+    --deep-soft: rgba(46,64,87,0.08);
+    --deep-line: rgba(46,64,87,0.35);
+    --shallow: #9C6B32;
+    --shallow-soft: rgba(156,107,50,0.09);
+    --line: #D7D8CF;
+    --shadow: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #14171a;
+      --surface: #1a1e21;
+      --ink: #E8E6DE;
+      --ink-soft: #ABB0A5;
+      --ink-faint: #767C73;
+      --deep: #8CA4C9;
+      --deep-soft: rgba(140,164,201,0.12);
+      --deep-line: rgba(140,164,201,0.4);
+      --shallow: #D3A468;
+      --shallow-soft: rgba(211,164,104,0.1);
+      --line: #2B302F;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #14171a;
+    --surface: #1a1e21;
+    --ink: #E8E6DE;
+    --ink-soft: #ABB0A5;
+    --ink-faint: #767C73;
+    --deep: #8CA4C9;
+    --deep-soft: rgba(140,164,201,0.12);
+    --deep-line: rgba(140,164,201,0.4);
+    --shallow: #D3A468;
+    --shallow-soft: rgba(211,164,104,0.1);
+    --line: #2B302F;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    margin: 0;
+    padding-block: 56px;
+    line-height: 1.65;
+  }
+
+  .page {
+    max-width: 700px;
+    margin: 0 auto;
+    padding-inline: 24px;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+    text-wrap: balance;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  /* ---------- Title block ---------- */
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--deep);
+    font-weight: 600;
+  }
+
+  .title-block { margin-bottom: 44px; }
+
+  .title-block h1 {
+    font-size: clamp(40px, 8vw, 58px);
+    font-weight: 500;
+    font-style: italic;
+    margin-top: 10px;
+    line-height: 1.05;
+  }
+
+  .byline {
+    margin-top: 14px;
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+
+  .byline strong { color: var(--ink); font-weight: 600; }
+
+  .thesis {
+    margin-top: 22px;
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    border-left: 2px solid var(--deep-line);
+    padding-left: 18px;
+  }
+
+  hr.rule {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 48px 0 40px;
+  }
+
+  /* ---------- Section headings ---------- */
+  section { margin-bottom: 8px; }
+
+  .section-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  h2 {
+    font-size: 27px;
+    font-weight: 500;
+    margin-bottom: 18px;
+  }
+
+  h3 { font-size: 18px; font-weight: 600; font-family: 'IBM Plex Sans', sans-serif; }
+
+  p { margin: 0 0 16px; color: var(--ink); }
+  p.soft { color: var(--ink-soft); }
+
+  strong { font-weight: 600; }
+  em { font-style: italic; }
+
+  /* ---------- Callout ---------- */
+  .callout {
+    background: var(--deep-soft);
+    border-left: 3px solid var(--deep);
+    padding: 18px 20px;
+    border-radius: 2px;
+    margin: 0 0 20px;
+    font-size: 15.5px;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* ---------- Philosophy grid ---------- */
+  .phil-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 22px 0 28px;
+  }
+  @media (max-width: 520px) {
+    .phil-grid { grid-template-columns: 1fr; }
+  }
+  .phil-card {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    padding: 16px 18px;
+  }
+  .phil-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--deep);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .phil-card p { font-size: 14.5px; margin-bottom: 8px; color: var(--ink-soft); }
+  .phil-card .ex { font-size: 13.5px; font-style: italic; color: var(--ink-faint); margin-bottom: 0; }
+
+  /* ---------- Rule blocks ---------- */
+  .rule-block { margin-bottom: 36px; }
+  .rule-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .rule-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--surface);
+    background: var(--deep);
+    padding: 3px 9px;
+    flex-shrink: 0;
+    letter-spacing: 0.03em;
+  }
+  .rule-head h3 {
+    font-family: 'Newsreader', serif;
+    font-size: 24px;
+    font-weight: 500;
+  }
+
+  /* ---------- Shallow marker ---------- */
+  .shallow-note {
+    background: var(--shallow-soft);
+    border-left: 3px solid var(--shallow);
+    padding: 14px 18px;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    margin: 4px 0 20px;
+  }
+  .shallow-note .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--shallow);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    margin-top: 52px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--ink-faint);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  ::selection { background: var(--deep-soft); }
+
+  /* ---------- Diagrams ---------- */
+  .diagram-scroll {
+    margin: 0 0 10px;
+  }
+  .diagram-scroll svg {
+    width: 100%;
+    max-width: 100%;
+    display: block;
+    height: auto;
+  }
+  figure.diagram { margin: 0 0 40px; }
+  figure.diagram figcaption {
+    margin-top: 12px;
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 560px;
+  }
+
+  svg text { font-family: 'IBM Plex Sans', sans-serif; }
+  .dia-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .08em; fill: var(--ink-faint); text-transform: uppercase; }
+  .dia-title { font-weight: 600; font-size: 12.5px; fill: var(--ink); }
+  .dia-sub { font-size: 10.5px; fill: var(--ink-soft); }
+  .dia-tiny { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; fill: var(--ink-faint); letter-spacing: .03em; }
+  .dia-tag-shallow { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; fill: var(--shallow); letter-spacing: .04em; text-transform: uppercase; }
+  .dia-hub-title { font-weight: 700; font-size: 13px; fill: var(--deep); letter-spacing: .03em; }
+  .dia-title-lg { font-weight: 700; font-size: 13.5px; fill: var(--deep); }
+  .dia-target { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; font-weight: 600; fill: var(--deep); letter-spacing: .03em; }
+  .dia-feedback-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; fill: var(--deep); font-weight: 600; letter-spacing: .02em; }
+  .dia-line-neutral { stroke: var(--ink-faint); stroke-width: 1.3; fill: none; }
+  .dia-line-deep { stroke: var(--deep); stroke-width: 1.3; fill: none; stroke-dasharray: 5,4; }
+  .dia-line-output { stroke: var(--ink); stroke-width: 1.8; fill: none; stroke-linejoin: round; }
+  .dia-guide { stroke: var(--ink-faint); stroke-width: 1; stroke-dasharray: 3,3; opacity: .5; }
+  .dia-guide-strong { stroke: var(--shallow); stroke-width: 1.3; stroke-dasharray: 4,3; }
+  .dia-box-neutral { fill: var(--surface); stroke: var(--ink-faint); stroke-width: 1; }
+  .dia-box-hub { fill: var(--deep-soft); stroke: var(--deep); stroke-width: 1.5; }
+  .dia-box-output { fill: var(--surface); stroke: var(--deep); stroke-width: 1.2; }
+  .dia-shade { fill: var(--shallow-soft); stroke: none; }
+</style>
+
+<div class="page">
+
+  <div class="title-block">
+    <span class="eyebrow">Book Notes — 01</span>
+    <h1>Deep Work</h1>
+    <div class="byline"><strong>Cal Newport</strong> — Rules for Focused Success in a Distracted World (2016)</div>
+    <p class="thesis">The ability to focus without distraction on a cognitively demanding task is becoming rare at the exact moment it's becoming valuable — and rare plus valuable is the oldest formula for leverage there is.</p>
+  </div>
+
+  <section>
+    <span class="section-tag">01 — The Core Idea</span>
+    <h2>The Deep Work Hypothesis</h2>
+    <p>Newport's central claim: the capacity to perform <strong>deep work</strong> — professional activity done in a state of distraction-free concentration that pushes cognitive abilities to their limit — is becoming increasingly rare across the economy at precisely the moment it's becoming increasingly valuable. Whoever cultivates it and builds their working life around it wins disproportionately. Everything else is <strong>shallow work</strong>: logistical, non-demanding tasks performed while half-distracted — email, status updates, most meetings — which are easy to replicate and create little new value.</p>
+    <p>The book runs on two halves. Part one makes three separate cases for why depth matters — economic, competitive, and existential. Part two hands over four rules for training the capacity, since Newport treats focus as a trainable skill, not a fixed trait.</p>
+
+    <p><strong>Why it's valuable:</strong> two abilities separate winners in a knowledge economy — mastering hard things quickly, and producing at an elite level in both quality and speed. Both require depth. Borrowing from economists Brynjolfsson and McAfee's account of automation's "great restructuring," Newport argues three groups profit as machines absorb routine work: people who can work creatively alongside intelligent machines, superstars (since technology collapses geography and lets the single best provider serve a global market), and owners of capital. Deep work is the path into the first two categories for almost everyone who isn't born into the third.</p>
+
+    <p><strong>Why it's rare:</strong> open offices, always-on messaging, and what Newport calls the <em>any-benefit mindset</em> — adopting a tool because it offers some conceivable upside, while ignoring its cost to attention — all push organizations away from depth. Knowledge work also lacks a clean metric for value, so people default to visible busyness (fast replies, packed calendars) as a proxy for productivity. None of this is a conspiracy; it's just what happens when nobody is pricing attention. That gap is the opportunity for outliers.</p>
+
+    <p><strong>Why it's meaningful:</strong> drawing on philosophy (Dreyfus and Kelly) and Csikszentmihalyi's flow research, Newport argues a life built around skilled, absorbed engagement with a craft is well-lived independent of its output. The feeling of stretched, purposeful concentration is what makes work — and by extension much of life — feel meaningful, regardless of the field.</p>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <span class="section-tag">02 — The Mechanism</span>
+    <h2>Why depth actually works</h2>
+    <p>Two research threads give the hypothesis teeth — this isn't a productivity aesthetic, it's a claim about how cognition physically works.</p>
+
+    <div class="callout">
+      <p><strong>Attention residue</strong> (Sophie Leroy, 2009): when you switch from task A to task B before finishing A, attention doesn't fully follow — a residue of A stays lodged on it, degrading performance on B for a stretch afterward. Every "quick check" of email mid-task taxes the next fifteen-plus minutes of work, even once you've consciously moved on. This is the mechanistic case against multitasking: switching isn't free, it's a tax paid in the currency of the next task's quality.</p>
+    </div>
+
+    <p><strong>Deliberate practice and myelin:</strong> skill-acquisition research explains why depth also raises your ceiling, not just your output. Myelin — the tissue insulating neurons, which speeds signal transmission — is laid down in response to sustained, effortful focus on a skill stretched just past its current level, with fast feedback. Working on a hard problem while distracted doesn't trigger this; it barely moves the needle on ability, no matter how many hours accumulate.</p>
+
+    <p>Put together, these give the book's structural logic: depth removes switching costs (Leroy) and applies the sustained strain that builds skill (myelination). Shallow work does neither — it neither protects output quality nor raises your ceiling, which is why a full day of shallow work can feel exhausting and still leave nothing durable behind.</p>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <span class="section-tag">03 — The Rules</span>
+    <h2>Four rules, one system</h2>
+    <p class="soft">Newport frames these as independent chapters, but they function as a closed loop — skip one and the other three quietly degrade. Read them as a system, not a menu.</p>
+  </section>
+
+  <div class="rule-block">
+    <div class="rule-head">
+      <span class="rule-num">RULE 01</span>
+      <h3>Work Deeply</h3>
+    </div>
+    <p>Willpower is a finite, depletable resource (per Roy Baumeister's ego-depletion research), so resisting distraction moment-to-moment through sheer discipline loses eventually. The fix: design environment and routine so the decision to go deep is made once, in advance, not re-litigated every hour.</p>
+
+    <div class="phil-grid">
+      <div class="phil-card">
+        <div class="phil-name">Monastic</div>
+        <p>Eliminate shallow obligations almost entirely.</p>
+        <p class="ex">Donald Knuth famously has no email address.</p>
+      </div>
+      <div class="phil-card">
+        <div class="phil-name">Bimodal</div>
+        <p>Split time into clearly demarcated deep stretches and open periods.</p>
+        <p class="ex">Carl Jung retreated to a stone tower at Bollingen, no electricity, to write.</p>
+      </div>
+      <div class="phil-card">
+        <div class="phil-name">Rhythmic</div>
+        <p>Build a daily habit at a fixed time; let a visible streak lower the activation energy.</p>
+        <p class="ex">Jerry Seinfeld's "don't break the chain" method.</p>
+      </div>
+      <div class="phil-card">
+        <div class="phil-name">Journalistic</div>
+        <p>Drop into depth in any pocket of free time, no ritual required.</p>
+        <p class="ex">Named for journalists trained to write on deadline; hardest mode, usually earned via the others first.</p>
+      </div>
+    </div>
+
+    <p>Two tactics work across all four: <strong>rituals</strong> — a fixed location, time, and startup behavior that signal "this is deep work now" and lower the friction of starting — and <strong>grand gestures</strong>, an unusual, sometimes costly change of environment that raises the perceived stakes of the work. J.K. Rowling checked into a five-star Edinburgh hotel to finish the final Harry Potter book; Bill Gates took twice-yearly solitary "Think Weeks" at a cabin. Newport also borrows the 4 Disciplines of Execution from business strategy: track <em>lead measures</em> (hours of deep work logged) rather than <em>lag measures</em> (revenue, which arrives too late to steer daily behavior), keep a visible scoreboard, and review weekly.</p>
+    <p>The rule also insists on genuine downtime — a fixed <strong>shutdown ritual</strong> at day's end that tells your brain every open task is either finished or captured somewhere trustworthy. That's what frees unconscious insight to keep working overnight, and what keeps the next day's willpower reserve from starting already drained.</p>
+  </div>
+
+  <div class="rule-block">
+    <div class="rule-head">
+      <span class="rule-num">RULE 02</span>
+      <h3>Embrace Boredom</h3>
+    </div>
+    <p>The capacity for depth is a trained muscle — and constant micro-stimulation (reaching for a phone in any idle thirty seconds) trains the opposite muscle: an inability to resist distraction that then bleeds into work. Newport's counterintuitive move is to fix the downtime habit before adding more focus time, so the brain stops rehearsing distraction-seeking all day long.</p>
+    <p><strong>Productive meditation:</strong> during physically occupied but mentally free time — walking, showering, driving — hold one professional problem in attention, and gently pull it back whenever it drifts, the way meditation trains a return to the breath. <strong>Memorization training</strong> (a shuffled deck of cards, digits of pi) builds the same underlying skill: holding structured information in mind against the pull of distraction.</p>
+    <p>The rule's blunt reframe: most people schedule when they'll <em>allow</em> a distraction during focused work. Newport says do the reverse — schedule the blocks where distraction is permitted, and treat everything outside them, idle moments included, as focus time by default.</p>
+  </div>
+
+  <div class="rule-block">
+    <div class="rule-head">
+      <span class="rule-num">RULE 03</span>
+      <h3>Quit Social Media</h3>
+    </div>
+    <p>Targets the <em>any-benefit approach</em> to tools — adopting something because it offers some conceivable upside (fear of missing out is, functionally, the attention economy's entire marketing pitch). Newport's replacement is the <strong>craftsman approach</strong>: identify the small number of factors that actually determine success in your work and life, adopt a tool only if its positive impact on those factors clearly outweighs the negative, and reject it otherwise — regardless of whatever benefits you're giving up.</p>
+    <p>This is the <strong>law of the vital few</strong> applied to attention: most results trace back to a small set of high-leverage activities, so most "nice to have" tools are net negative once fragmented attention is priced in, even if each one is individually harmless. The practical test is a 30-day quiet quit of a suspect tool, unannounced — if nothing breaks and nobody notices, the answer was already there, and it cost nothing to find.</p>
+  </div>
+
+  <div class="rule-block">
+    <div class="rule-head">
+      <span class="rule-num">RULE 04</span>
+      <h3>Drain the Shallows</h3>
+    </div>
+    <p>Shallow work isn't inherently bad — it's often unavoidable admin — but it obeys Parkinson's Law: it expands to fill whatever time isn't actively fenced off from it. So it has to be capped, not merely tolerated.</p>
+    <div class="shallow-note">
+      <span class="tag">The depth test</span>
+      How many months would it take to train a smart recent graduate, with no specialized background, to do this task competently? A low answer marks shallow work worth eliminating, batching, or delegating.
+    </div>
+    <p>Other tactics: schedule every minute of the workday in advance, in blocks revised as the day evolves, rather than left to reactive drift; ask for an explicit <strong>shallow-work budget</strong> so prioritization gets forced upward instead of defaulting to "handle everything"; become harder to reach, shifting the cost of a request back onto whoever's sending it instead of it landing free on you; and adopt <strong>fixed-schedule productivity</strong> — commit to a hard stop time and let that scarcity force ruthless triage of what's actually deep, rather than letting shallow tasks expand to consume whatever hours happen to be available.</p>
+  </div>
+
+  <hr class="rule">
+
+  <section>
+    <span class="section-tag">04 — Synthesis</span>
+    <h2>Reading the rules as one loop</h2>
+    <p>The four rules aren't independent tactics — they're a feedback loop. Rule 1 builds the skill by protecting structured time to go deep. Rule 2 removes the antagonist: the moment-to-moment habit that erodes the skill outside of work hours. Rule 3 protects the input — attention itself — by gatekeeping what's allowed to compete for it. Rule 4 protects the container: the calendar space the other three depend on existing at all.</p>
+    <p>Skip any one and the others quietly fail. Scheduling deep blocks without draining the shallows just means the blocks get cannibalized by "urgent" admin the moment it appears. Quitting social media without training boredom tolerance just relocates the itch to whatever app is still installed.</p>
+    <p class="soft">For someone running a company rather than reporting to one, the leverage point moves: there's no boss to hand you a shallow-work budget, so it has to be self-imposed — and the temptation to mistake founder-busyness (inbox zero, instant replies, visible availability) for founder-productivity is exactly the "busyness as proxy" trap the book describes, with the added twist that as the one setting the norm, rewarding fast replies is what trains a team to keep interrupting you. Bimodal or rhythmic scheduling tends to fit an operator role better than monastic withdrawal: ring-fence recurring deep blocks around the parts of the job that are genuinely reactive by nature, rather than pretending the role allows full retreat.</p>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <span class="section-tag">05 — Mapped Out</span>
+    <h2>The whole argument, as one chart</h2>
+    <p class="soft">Everything above, compressed into a single flow: the claim at the top, the two reasons it's true, the mechanism that makes it true, the four rules that act on the mechanism, and the payoff that closes the loop. Each box carries its own why, not just its name — read top to bottom and the chart stands on its own.</p>
+  </section>
+
+  <figure class="diagram">
+    <div class="diagram-scroll">
+      <svg viewBox="0 0 600 1460" role="img" aria-label="Flowchart: the Deep Work Hypothesis is supported by three reasons — valuable, rare, meaningful — which lead into two mechanisms, attention residue and myelination. Those mechanisms are acted on by four rules: Quit Social Media protects attention, Drain the Shallows protects the calendar, Work Deeply executes the session, Embrace Boredom trains focus capacity. All four feed a protected deep work block, which produces higher output quality and a rising skill ceiling, which compound back into rules 1 and 2, making the next cycle easier.">
+        <defs>
+          <marker id="arrow-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--ink-faint)"/>
+          </marker>
+          <marker id="arrow-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--deep)"/>
+          </marker>
+        </defs>
+
+        <!-- ROW 0 — HYPOTHESIS -->
+        <rect x="25" y="20" width="550" height="110" rx="6" class="dia-box-hub"/>
+        <text x="300" y="42" text-anchor="middle" class="dia-label">THE CLAIM</text>
+        <text x="300" y="63" text-anchor="middle" class="dia-title-lg">Deep work is rare + valuable → outsized leverage</text>
+        <text x="300" y="84" text-anchor="middle" class="dia-sub">Two abilities decide who wins: master hard things fast,</text>
+        <text x="300" y="98" text-anchor="middle" class="dia-sub">produce elite work — while machines eat the rest.</text>
+
+        <!-- bus 0 -> 1 -->
+        <line x1="300" y1="130" x2="300" y2="145" class="dia-line-neutral"/>
+        <line x1="155" y1="145" x2="445" y2="145" class="dia-line-neutral"/>
+        <line x1="155" y1="145" x2="155" y2="159" class="dia-line-neutral" marker-end="url(#arrow-a)"/>
+        <line x1="445" y1="145" x2="445" y2="159" class="dia-line-neutral" marker-end="url(#arrow-a)"/>
+
+        <!-- ROW 1a — WHY VALUABLE / WHY RARE -->
+        <rect x="25" y="160" width="260" height="150" rx="5" class="dia-box-neutral"/>
+        <text x="155" y="182" text-anchor="middle" class="dia-label">WHY VALUABLE</text>
+        <text x="155" y="203" text-anchor="middle" class="dia-title">The great restructuring</text>
+        <text x="155" y="225" text-anchor="middle" class="dia-sub">Automation eats routine work —</text>
+        <text x="155" y="239" text-anchor="middle" class="dia-sub">3 groups profit: skilled collaborators,</text>
+        <text x="155" y="253" text-anchor="middle" class="dia-sub">superstars, capital owners.</text>
+        <text x="155" y="277" text-anchor="middle" class="dia-tiny">→ depth is the path into the first two</text>
+
+        <rect x="315" y="160" width="260" height="150" rx="5" class="dia-box-neutral"/>
+        <text x="445" y="182" text-anchor="middle" class="dia-label">WHY RARE</text>
+        <text x="445" y="203" text-anchor="middle" class="dia-title">Nobody's pricing attention</text>
+        <text x="445" y="225" text-anchor="middle" class="dia-sub">Open offices, any-benefit tools,</text>
+        <text x="445" y="239" text-anchor="middle" class="dia-sub">busyness-as-proxy all default</text>
+        <text x="445" y="253" text-anchor="middle" class="dia-sub">organizations toward shallow.</text>
+        <text x="445" y="277" text-anchor="middle" class="dia-tiny">→ that gap is the opportunity</text>
+
+        <!-- bus 1a -> 1b -->
+        <line x1="155" y1="310" x2="155" y2="322" class="dia-line-neutral"/>
+        <line x1="445" y1="310" x2="445" y2="322" class="dia-line-neutral"/>
+        <line x1="155" y1="322" x2="445" y2="322" class="dia-line-neutral"/>
+        <line x1="300" y1="322" x2="300" y2="334" class="dia-line-neutral" marker-end="url(#arrow-a)"/>
+
+        <!-- ROW 1b — WHY MEANINGFUL -->
+        <rect x="25" y="335" width="550" height="115" rx="5" class="dia-box-neutral"/>
+        <text x="300" y="357" text-anchor="middle" class="dia-label">WHY MEANINGFUL</text>
+        <text x="300" y="378" text-anchor="middle" class="dia-title">The payoff isn't only output</text>
+        <text x="300" y="399" text-anchor="middle" class="dia-sub">Flow research + craft philosophy: stretched, purposeful</text>
+        <text x="300" y="413" text-anchor="middle" class="dia-sub">focus makes work feel well-lived on its own.</text>
+        <text x="300" y="436" text-anchor="middle" class="dia-tiny">→ resurfaces at the very end, below</text>
+
+        <!-- bus 1b -> 2 -->
+        <line x1="300" y1="450" x2="300" y2="465" class="dia-line-neutral"/>
+        <line x1="155" y1="465" x2="445" y2="465" class="dia-line-neutral"/>
+        <line x1="155" y1="465" x2="155" y2="479" class="dia-line-neutral" marker-end="url(#arrow-a)"/>
+        <line x1="445" y1="465" x2="445" y2="479" class="dia-line-neutral" marker-end="url(#arrow-a)"/>
+
+        <!-- ROW 2 — MECHANISM -->
+        <rect x="25" y="480" width="260" height="150" rx="5" class="dia-box-neutral"/>
+        <text x="155" y="502" text-anchor="middle" class="dia-label">MECHANISM · 1</text>
+        <text x="155" y="523" text-anchor="middle" class="dia-title">Attention residue — Leroy, 2009</text>
+        <text x="155" y="545" text-anchor="middle" class="dia-sub">Switch tasks before finishing and</text>
+        <text x="155" y="559" text-anchor="middle" class="dia-sub">residue of the old stays — the new</text>
+        <text x="155" y="573" text-anchor="middle" class="dia-sub">task runs degraded for ~15 min.</text>
+        <text x="155" y="597" text-anchor="middle" class="dia-tiny">→ batching isn't preference,</text>
+        <text x="155" y="611" text-anchor="middle" class="dia-tiny">it's tax avoidance</text>
+
+        <rect x="315" y="480" width="260" height="150" rx="5" class="dia-box-neutral"/>
+        <text x="445" y="502" text-anchor="middle" class="dia-label">MECHANISM · 2</text>
+        <text x="445" y="523" text-anchor="middle" class="dia-title">Myelination / deliberate practice</text>
+        <text x="445" y="545" text-anchor="middle" class="dia-sub">Sustained, effortful focus just past</text>
+        <text x="445" y="559" text-anchor="middle" class="dia-sub">current skill, fast feedback,</text>
+        <text x="445" y="573" text-anchor="middle" class="dia-sub">insulates the circuit under strain.</text>
+        <text x="445" y="597" text-anchor="middle" class="dia-tiny">→ distracted "practice" barely</text>
+        <text x="445" y="611" text-anchor="middle" class="dia-tiny">moves the ceiling</text>
+
+        <!-- bus 2 -> 3 -->
+        <line x1="155" y1="630" x2="155" y2="642" class="dia-line-neutral"/>
+        <line x1="445" y1="630" x2="445" y2="642" class="dia-line-neutral"/>
+        <line x1="155" y1="642" x2="445" y2="642" class="dia-line-neutral"/>
+        <line x1="155" y1="642" x2="155" y2="654" class="dia-line-neutral" marker-end="url(#arrow-a)"/>
+        <line x1="445" y1="642" x2="445" y2="654" class="dia-line-neutral" marker-end="url(#arrow-a)"/>
+
+        <!-- ROW 3a — RULE 3 / RULE 4 -->
+        <rect x="25" y="655" width="260" height="195" rx="5" class="dia-box-neutral"/>
+        <text x="155" y="678" text-anchor="middle" class="dia-label">RULE 3</text>
+        <text x="155" y="700" text-anchor="middle" class="dia-title">Quit Social Media</text>
+        <text x="155" y="719" text-anchor="middle" class="dia-target">protects: ATTENTION</text>
+        <text x="155" y="740" text-anchor="middle" class="dia-tiny">Any-benefit thinking lets low-value</text>
+        <text x="155" y="754" text-anchor="middle" class="dia-tiny">tools fragment focus for a "maybe."</text>
+        <text x="155" y="778" text-anchor="middle" class="dia-tiny">test: 30-day quiet quit — nothing</text>
+        <text x="155" y="792" text-anchor="middle" class="dia-tiny">breaks, you already had the answer</text>
+
+        <rect x="315" y="655" width="260" height="195" rx="5" class="dia-box-neutral"/>
+        <text x="445" y="678" text-anchor="middle" class="dia-label">RULE 4</text>
+        <text x="445" y="700" text-anchor="middle" class="dia-title">Drain the Shallows</text>
+        <text x="445" y="719" text-anchor="middle" class="dia-target">protects: CALENDAR</text>
+        <text x="445" y="740" text-anchor="middle" class="dia-tiny">Shallow work obeys Parkinson's</text>
+        <text x="445" y="754" text-anchor="middle" class="dia-tiny">Law — it expands to fill space.</text>
+        <text x="445" y="778" text-anchor="middle" class="dia-tiny">test: how many months to train a</text>
+        <text x="445" y="792" text-anchor="middle" class="dia-tiny">grad to do this task competently?</text>
+
+        <!-- bus 3a -> 3b -->
+        <line x1="155" y1="850" x2="155" y2="862" class="dia-line-neutral"/>
+        <line x1="445" y1="850" x2="445" y2="862" class="dia-line-neutral"/>
+        <line x1="155" y1="862" x2="445" y2="862" class="dia-line-neutral"/>
+        <line x1="155" y1="862" x2="155" y2="874" class="dia-line-neutral" marker-end="url(#arrow-a)"/>
+        <line x1="445" y1="862" x2="445" y2="874" class="dia-line-neutral" marker-end="url(#arrow-a)"/>
+
+        <!-- ROW 3b — RULE 1 / RULE 2 -->
+        <rect x="25" y="875" width="260" height="195" rx="5" class="dia-box-neutral"/>
+        <text x="155" y="898" text-anchor="middle" class="dia-label">RULE 1</text>
+        <text x="155" y="920" text-anchor="middle" class="dia-title">Work Deeply</text>
+        <text x="155" y="939" text-anchor="middle" class="dia-target">executes: THE SESSION</text>
+        <text x="155" y="960" text-anchor="middle" class="dia-tiny">Willpower is finite — the decision</text>
+        <text x="155" y="974" text-anchor="middle" class="dia-tiny">must be made once, not re-fought.</text>
+        <text x="155" y="998" text-anchor="middle" class="dia-tiny">method: 4 philosophies + rituals</text>
+        <text x="155" y="1012" text-anchor="middle" class="dia-tiny">+ grand gestures</text>
+
+        <rect x="315" y="875" width="260" height="195" rx="5" class="dia-box-neutral"/>
+        <text x="445" y="898" text-anchor="middle" class="dia-label">RULE 2</text>
+        <text x="445" y="920" text-anchor="middle" class="dia-title">Embrace Boredom</text>
+        <text x="445" y="939" text-anchor="middle" class="dia-target">trains: FOCUS CAPACITY</text>
+        <text x="445" y="960" text-anchor="middle" class="dia-tiny">Micro-stimulation trains distraction-</text>
+        <text x="445" y="974" text-anchor="middle" class="dia-tiny">seeking that bleeds into work.</text>
+        <text x="445" y="998" text-anchor="middle" class="dia-tiny">method: productive meditation</text>
+        <text x="445" y="1012" text-anchor="middle" class="dia-tiny">+ memorization training</text>
+
+        <!-- bus 3b -> 4 (hub) -->
+        <line x1="155" y1="1070" x2="155" y2="1082" class="dia-line-neutral"/>
+        <line x1="445" y1="1070" x2="445" y2="1082" class="dia-line-neutral"/>
+        <line x1="155" y1="1082" x2="445" y2="1082" class="dia-line-neutral"/>
+        <line x1="300" y1="1082" x2="300" y2="1094" class="dia-line-neutral" marker-end="url(#arrow-a)"/>
+
+        <!-- ROW 4 — HUB -->
+        <rect x="150" y="1095" width="300" height="145" rx="6" class="dia-box-hub"/>
+        <text x="300" y="1117" text-anchor="middle" class="dia-label">THE CONVERGENCE</text>
+        <text x="300" y="1140" text-anchor="middle" class="dia-title-lg">PROTECTED DEEP WORK BLOCK</text>
+        <text x="300" y="1161" text-anchor="middle" class="dia-sub">input + container + capacity</text>
+        <text x="300" y="1175" text-anchor="middle" class="dia-sub">+ execution, together</text>
+        <text x="300" y="1198" text-anchor="middle" class="dia-tiny">(one ritual, actually run)</text>
+
+        <!-- bus 4 -> 5 -->
+        <line x1="300" y1="1240" x2="300" y2="1252" class="dia-line-neutral"/>
+        <line x1="155" y1="1252" x2="445" y2="1252" class="dia-line-neutral"/>
+        <line x1="155" y1="1252" x2="155" y2="1264" class="dia-line-neutral" marker-end="url(#arrow-a)"/>
+        <line x1="445" y1="1252" x2="445" y2="1264" class="dia-line-neutral" marker-end="url(#arrow-a)"/>
+
+        <!-- ROW 5 — OUTPUTS -->
+        <rect x="25" y="1265" width="260" height="130" rx="5" class="dia-box-output"/>
+        <text x="155" y="1287" text-anchor="middle" class="dia-label">RESULT · 1</text>
+        <text x="155" y="1309" text-anchor="middle" class="dia-title-lg">Output quality ↑</text>
+        <text x="155" y="1330" text-anchor="middle" class="dia-sub">no attention residue — full</text>
+        <text x="155" y="1344" text-anchor="middle" class="dia-sub">output from the first minute</text>
+        <text x="155" y="1366" text-anchor="middle" class="dia-tiny">(Leroy, 2009)</text>
+
+        <rect x="315" y="1265" width="260" height="130" rx="5" class="dia-box-output"/>
+        <text x="445" y="1287" text-anchor="middle" class="dia-label">RESULT · 2</text>
+        <text x="445" y="1309" text-anchor="middle" class="dia-title-lg">Skill ceiling ↑</text>
+        <text x="445" y="1330" text-anchor="middle" class="dia-sub">the circuit that was straining</text>
+        <text x="445" y="1344" text-anchor="middle" class="dia-sub">is now insulated, permanently</text>
+        <text x="445" y="1366" text-anchor="middle" class="dia-tiny">(deliberate practice)</text>
+
+        <!-- feedback loop — two side rails, symmetric -->
+        <line x1="155" y1="1395" x2="155" y2="1412" class="dia-line-deep"/>
+        <line x1="12" y1="1412" x2="155" y2="1412" class="dia-line-deep"/>
+        <line x1="12" y1="1412" x2="12" y2="972" class="dia-line-deep"/>
+        <line x1="12" y1="972" x2="24" y2="972" class="dia-line-deep" marker-end="url(#arrow-b)"/>
+
+        <line x1="445" y1="1395" x2="445" y2="1412" class="dia-line-deep"/>
+        <line x1="445" y1="1412" x2="588" y2="1412" class="dia-line-deep"/>
+        <line x1="588" y1="1412" x2="588" y2="972" class="dia-line-deep"/>
+        <line x1="588" y1="972" x2="576" y2="972" class="dia-line-deep" marker-end="url(#arrow-b)"/>
+
+        <text x="300" y="1432" text-anchor="middle" class="dia-feedback-label">compounds → next cycle's ritual and</text>
+        <text x="300" y="1446" text-anchor="middle" class="dia-feedback-label">boredom tolerance get easier to hold</text>
+      </svg>
+    </div>
+    <figcaption>The full shape of the argument: a claim, the three reasons behind it, the two mechanisms that make it real, the four rules that act on those mechanisms, and the compounding payoff that reinforces rules 1 and 2 on the next pass.</figcaption>
+  </figure>
+
+  <figure class="diagram">
+    <div class="diagram-scroll">
+      <svg viewBox="0 0 600 400" role="img" aria-label="Close-up of Mechanism 1: a line showing output level over time dips for about fifteen minutes after an interruption before recovering, compared to a flat, undiminished line when tasks are finished in sequence without switching.">
+        <text x="50" y="25" class="dia-label">CLOSE-UP · WITH SWITCHING</text>
+        <line x1="50" y1="70" x2="580" y2="70" class="dia-guide"/>
+        <line x1="50" y1="140" x2="580" y2="140" class="dia-guide"/>
+        <text x="42" y="74" text-anchor="end" class="dia-tiny">high</text>
+        <text x="42" y="144" text-anchor="end" class="dia-tiny">low</text>
+        <rect x="263" y="35" width="167" height="115" class="dia-shade"/>
+        <line x1="260" y1="35" x2="260" y2="150" class="dia-guide-strong"/>
+        <circle cx="260" cy="70" r="3" fill="var(--shallow)"/>
+        <text x="260" y="170" text-anchor="middle" class="dia-tag-shallow">interrupt — check email</text>
+        <text x="346" y="182" text-anchor="middle" class="dia-sub">residue tax ≈ 15 min</text>
+        <polyline points="50,70 258,70 263,140 288,138 430,70 580,70" class="dia-line-output"/>
+
+        <text x="50" y="235" class="dia-label">CLOSE-UP · WITHOUT SWITCHING</text>
+        <line x1="50" y1="280" x2="580" y2="280" class="dia-guide"/>
+        <line x1="50" y1="350" x2="580" y2="350" class="dia-guide"/>
+        <text x="42" y="284" text-anchor="end" class="dia-tiny">high</text>
+        <text x="42" y="354" text-anchor="end" class="dia-tiny">low</text>
+        <line x1="260" y1="245" x2="260" y2="360" class="dia-guide"/>
+        <circle cx="260" cy="280" r="3" fill="var(--ink-faint)"/>
+        <polyline points="50,280 580,280" class="dia-line-output"/>
+        <text x="260" y="378" text-anchor="middle" class="dia-tiny">next task begins — output unaffected</text>
+      </svg>
+    </div>
+    <figcaption>Mechanism 1, zoomed in: an interruption doesn't just cost its own length — output stays degraded for roughly fifteen minutes afterward. Sequencing tasks instead of interleaving them skips the dip entirely.</figcaption>
+  </figure>
+
+  <footer>Cal Newport — Deep Work (Grand Central Publishing, 2016) · Notes, not excerpts</footer>
+
+</div>
