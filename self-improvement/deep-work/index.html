@@ -272,6 +272,39 @@
   .dia-title-lg { font-weight: 700; font-size: 13.5px; fill: var(--deep); }
   .dia-target { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; font-weight: 600; fill: var(--deep); letter-spacing: .03em; }
   .dia-feedback-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; fill: var(--deep); font-weight: 600; letter-spacing: .02em; }
+
+  /* ---------- Actionables ---------- */
+  .action-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 24px 0 8px;
+  }
+  .action-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .action-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--deep);
+    background: var(--deep-soft);
+    padding: 2px 8px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    letter-spacing: .02em;
+  }
+  .action-text {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+  .action-text strong { font-weight: 600; }
   .dia-line-neutral { stroke: var(--ink-faint); stroke-width: 1.3; fill: none; }
   .dia-line-deep { stroke: var(--deep); stroke-width: 1.3; fill: none; stroke-dasharray: 5,4; }
   .dia-line-output { stroke: var(--ink); stroke-width: 1.8; fill: none; stroke-linejoin: round; }
@@ -630,6 +663,27 @@
     </div>
     <figcaption>Mechanism 1, zoomed in: an interruption doesn't just cost its own length — output stays degraded for roughly fifteen minutes afterward. Sequencing tasks instead of interleaving them skips the dip entirely.</figcaption>
   </figure>
+
+  <hr class="rule">
+
+  <section>
+    <span class="section-tag">06 — Do This</span>
+    <h2>Ten actions, not ten insights</h2>
+    <p class="soft">The chart above is the shape of the argument. This is what changes on the calendar this week.</p>
+  </section>
+
+  <div class="action-list">
+    <div class="action-item"><span class="action-num">01</span><span class="action-text"><strong>Block 3–4 hour deep sessions before the week starts, not during it.</strong> Put them on the calendar like a client call — something that gets rescheduled, never just dropped.</span></div>
+    <div class="action-item"><span class="action-num">02</span><span class="action-text"><strong>Install a shutdown ritual.</strong> Every open task gets reviewed and either finished or written down, then close with a fixed phrase, out loud. No exceptions, even on bad days.</span></div>
+    <div class="action-item"><span class="action-num">03</span><span class="action-text"><strong>Run a 30-day quiet quit on the one tool you'd defend hardest.</strong> Don't announce it — just stop using it and see if anyone, including you, actually notices.</span></div>
+    <div class="action-item"><span class="action-num">04</span><span class="action-text"><strong>Set your own shallow-work budget in writing before the week starts.</strong> A percentage of hours, decided in advance — not whatever's left over after deep work.</span></div>
+    <div class="action-item"><span class="action-num">05</span><span class="action-text"><strong>Batch shallow work into one or two fixed windows a day.</strong> Email, Slack, admin — everything outside those windows waits, full stop.</span></div>
+    <div class="action-item"><span class="action-num">06</span><span class="action-text"><strong>Pick one dead-time activity — commute, gym, shower — for productive meditation.</strong> One unresolved problem, gently pulled back into focus every time it drifts.</span></div>
+    <div class="action-item"><span class="action-num">07</span><span class="action-text"><strong>Choose bimodal or rhythmic scheduling, not monastic, and commit for 30 days</strong> before judging whether it actually fits how you work.</span></div>
+    <div class="action-item"><span class="action-num">08</span><span class="action-text"><strong>Run the depth test on this week's task list.</strong> Anything a smart new hire could learn in under a month gets delegated or cut — not just tolerated.</span></div>
+    <div class="action-item"><span class="action-num">09</span><span class="action-text"><strong>Set a hard stop time and defend it for two weeks.</strong> Watch how much "urgent" shallow work quietly disappears once the day can't expand to fit it.</span></div>
+    <div class="action-item"><span class="action-num">10</span><span class="action-text"><strong>Audit one subscription or habit you adopted on "it might help" logic.</strong> Craftsman test: does it clearly win on what actually matters, or is it just an any-benefit holdover?</span></div>
+  </div>
 
   <footer>Cal Newport — Deep Work (Grand Central Publishing, 2016) · Notes, not excerpts</footer>
 
