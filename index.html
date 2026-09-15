@@ -17,6 +17,7 @@
     --deep-soft: rgba(46,64,87,0.08);
     --deep-line: rgba(46,64,87,0.35);
     --line: #D7D8CF;
+    --pending-red: #B23B3B;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -29,12 +30,13 @@
       --deep-soft: rgba(140,164,201,0.12);
       --deep-line: rgba(140,164,201,0.4);
       --line: #2B302F;
+      --pending-red: #E08585;
     }
   }
   :root[data-theme="dark"] {
     --paper: #14171a; --surface: #1a1e21; --ink: #E8E6DE; --ink-soft: #ABB0A5;
     --ink-faint: #767C73; --deep: #8CA4C9; --deep-soft: rgba(140,164,201,0.12);
-    --deep-line: rgba(140,164,201,0.4); --line: #2B302F;
+    --deep-line: rgba(140,164,201,0.4); --line: #2B302F; --pending-red: #E08585;
   }
   * { box-sizing: border-box; }
   body {
@@ -58,6 +60,9 @@
   .card-title { font-family: 'Newsreader', serif; font-size: 21px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
   .card-meta { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
   .card-desc { font-size: 14px; color: var(--ink-soft); line-height: 1.5; }
+  .card-actions { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-faint); }
+  .card-actions strong { color: var(--ink); font-weight: 600; }
+  .card-actions .pending-count { color: var(--pending-red); font-weight: 600; }
   footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--ink-faint); font-family: 'IBM Plex Mono', monospace; }
   a { color: inherit; }
 
@@ -92,6 +97,7 @@
       <div class="card-title">Self-Improvement</div>
       <div class="card-meta">1 summary</div>
       <div class="card-desc">Deep Work — Cal Newport</div>
+      <div class="card-actions"><strong>10</strong> action items · <span class="pending-count">6 pending</span></div>
     </a>
   </div>
 
