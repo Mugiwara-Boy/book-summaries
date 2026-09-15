@@ -314,12 +314,34 @@
   .dia-box-hub { fill: var(--deep-soft); stroke: var(--deep); stroke-width: 1.5; }
   .dia-box-output { fill: var(--surface); stroke: var(--deep); stroke-width: 1.2; }
   .dia-shade { fill: var(--shallow-soft); stroke: none; }
+
+  .site-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 36px; padding-bottom: 16px; border-bottom: 1px solid var(--line); font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+  .site-nav-home { color: var(--ink); font-weight: 600; text-decoration: none; letter-spacing: .02em; }
+  .site-nav-home:hover { color: var(--deep); }
+  .site-nav-sep { color: var(--ink-faint); }
+  .site-nav-genres { display: flex; flex-wrap: wrap; gap: 8px; }
+  .genre-pill { text-decoration: none; padding: 3px 10px; border: 1px solid var(--line); color: var(--ink-soft); letter-spacing: .03em; text-transform: uppercase; font-size: 10.5px; }
+  .genre-pill:hover { border-color: var(--deep-line); color: var(--ink); }
+  .genre-pill.active { background: var(--deep); border-color: var(--deep); color: var(--surface); }
+  .site-nav-crumb { color: var(--ink-faint); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .03em; }
+  .site-nav-crumb a { text-decoration: none; color: var(--ink-soft); }
+  .site-nav-crumb a:hover { color: var(--deep); }
 </style>
 </head>
 <body>
 
 
 <div class="page">
+
+  <nav class="site-nav">
+    <a class="site-nav-home" href="../../">Book Summaries</a>
+    <span class="site-nav-sep">·</span>
+    <span class="site-nav-genres">
+      <a class="genre-pill active" href="../">Self-Improvement</a>
+    </span>
+    <span class="site-nav-sep">·</span>
+    <span class="site-nav-crumb"><a href="../">Self-Improvement</a> / Deep Work</span>
+  </nav>
 
   <div class="title-block">
     <span class="eyebrow">Book Notes — 01</span>
@@ -685,7 +707,7 @@
     <div class="action-item"><span class="action-num">10</span><span class="action-text"><strong>Audit one subscription or habit you adopted on "it might help" logic.</strong> Craftsman test: does it clearly win on what actually matters, or is it just an any-benefit holdover?</span></div>
   </div>
 
-  <footer>Cal Newport — Deep Work (Grand Central Publishing, 2016) · Notes, not excerpts</footer>
+  <footer>Cal Newport — Deep Work (Grand Central Publishing, 2016) · Notes, not excerpts<br><br><a href="../">← More Self-Improvement summaries</a> · <a href="../../">All genres</a></footer>
 
 </div>
 
