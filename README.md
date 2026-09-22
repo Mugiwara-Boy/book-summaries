@@ -5,3 +5,4 @@ Deep-dive book summaries — core thesis, mechanism, structure, a full-argument 
 ## Self-Improvement
 
 - [Deep Work — Cal Newport](self-improvement/deep-work/)
+- [Thinking in Bets — Annie Duke](self-improvement/thinking-in-bets/)

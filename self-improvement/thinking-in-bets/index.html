@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Thinking in Bets</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+  :root {
+    --paper: #EDEEE8;
+    --surface: #F8F8F3;
+    --ink: #1C2321;
+    --ink-soft: #4E564F;
+    --ink-faint: #7C837A;
+    --deep: #2E4057;
+    --deep-soft: rgba(46,64,87,0.08);
+    --deep-line: rgba(46,64,87,0.35);
+    --shallow: #9C6B32;
+    --shallow-soft: rgba(156,107,50,0.09);
+    --line: #D7D8CF;
+    --shadow: none;
+    --pending-red: #B23B3B;
+    --pending-red-soft: rgba(178,59,59,0.08);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #14171a;
+      --surface: #1a1e21;
+      --ink: #E8E6DE;
+      --ink-soft: #ABB0A5;
+      --ink-faint: #767C73;
+      --deep: #8CA4C9;
+      --deep-soft: rgba(140,164,201,0.12);
+      --deep-line: rgba(140,164,201,0.4);
+      --shallow: #D3A468;
+      --shallow-soft: rgba(211,164,104,0.1);
+      --line: #2B302F;
+      --pending-red: #E08585;
+      --pending-red-soft: rgba(224,133,133,0.1);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #14171a;
+    --surface: #1a1e21;
+    --ink: #E8E6DE;
+    --ink-soft: #ABB0A5;
+    --ink-faint: #767C73;
+    --deep: #8CA4C9;
+    --deep-soft: rgba(140,164,201,0.12);
+    --deep-line: rgba(140,164,201,0.4);
+    --shallow: #D3A468;
+    --shallow-soft: rgba(211,164,104,0.1);
+    --line: #2B302F;
+    --pending-red: #E08585;
+    --pending-red-soft: rgba(224,133,133,0.1);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    margin: 0;
+    padding-block: 56px;
+    line-height: 1.65;
+  }
+
+  .page {
+    max-width: 700px;
+    margin: 0 auto;
+    padding-inline: 24px;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+    text-wrap: balance;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  /* ---------- Title block ---------- */
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--deep);
+    font-weight: 600;
+  }
+
+  .title-block { margin-bottom: 44px; }
+
+  .title-block h1 {
+    font-size: clamp(40px, 8vw, 58px);
+    font-weight: 500;
+    font-style: italic;
+    margin-top: 10px;
+    line-height: 1.05;
+  }
+
+  .byline {
+    margin-top: 14px;
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+
+  .byline strong { color: var(--ink); font-weight: 600; }
+
+  .thesis {
+    margin-top: 22px;
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    border-left: 2px solid var(--deep-line);
+    padding-left: 18px;
+  }
+
+  hr.rule {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 48px 0 40px;
+  }
+
+  /* ---------- Section headings ---------- */
+  section { margin-bottom: 8px; }
+
+  .section-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  h2 {
+    font-size: 27px;
+    font-weight: 500;
+    margin-bottom: 18px;
+  }
+
+  h3 { font-size: 18px; font-weight: 600; font-family: 'IBM Plex Sans', sans-serif; }
+
+  p { margin: 0 0 16px; color: var(--ink); }
+  p.soft { color: var(--ink-soft); }
+
+  strong { font-weight: 600; }
+  em { font-style: italic; }
+
+  /* ---------- Callout ---------- */
+  .callout {
+    background: var(--deep-soft);
+    border-left: 3px solid var(--deep);
+    padding: 18px 20px;
+    border-radius: 2px;
+    margin: 0 0 20px;
+    font-size: 15.5px;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* ---------- Philosophy grid ---------- */
+  .phil-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 22px 0 28px;
+  }
+  @media (max-width: 520px) {
+    .phil-grid { grid-template-columns: 1fr; }
+  }
+  .phil-card {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    padding: 16px 18px;
+  }
+  .phil-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--deep);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .phil-card p { font-size: 14.5px; margin-bottom: 8px; color: var(--ink-soft); }
+  .phil-card .ex { font-size: 13.5px; font-style: italic; color: var(--ink-faint); margin-bottom: 0; }
+
+  /* ---------- Rule blocks ---------- */
+  .rule-block { margin-bottom: 36px; }
+  .rule-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .rule-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--surface);
+    background: var(--deep);
+    padding: 3px 9px;
+    flex-shrink: 0;
+    letter-spacing: 0.03em;
+  }
+  .rule-head h3 {
+    font-family: 'Newsreader', serif;
+    font-size: 24px;
+    font-weight: 500;
+  }
+
+  /* ---------- Shallow marker ---------- */
+  .shallow-note {
+    background: var(--shallow-soft);
+    border-left: 3px solid var(--shallow);
+    padding: 14px 18px;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    margin: 4px 0 20px;
+  }
+  .shallow-note .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--shallow);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    margin-top: 52px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--ink-faint);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  ::selection { background: var(--deep-soft); }
+
+  /* ---------- Diagrams ---------- */
+  .diagram-scroll {
+    margin: 0 0 10px;
+  }
+  .diagram-scroll svg {
+    width: 100%;
+    max-width: 100%;
+    display: block;
+    height: auto;
+  }
+  figure.diagram { margin: 0 0 40px; }
+  figure.diagram figcaption {
+    margin-top: 12px;
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 560px;
+  }
+
+  svg text { font-family: 'IBM Plex Sans', sans-serif; }
+  .dia-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .08em; fill: var(--ink-faint); text-transform: uppercase; }
+  .dia-title { font-weight: 600; font-size: 12.5px; fill: var(--ink); }
+  .dia-sub { font-size: 10.5px; fill: var(--ink-soft); }
+  .dia-tiny { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; fill: var(--ink-faint); letter-spacing: .03em; }
+  .dia-tag-shallow { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; fill: var(--shallow); letter-spacing: .04em; text-transform: uppercase; }
+  .dia-hub-title { font-weight: 700; font-size: 13px; fill: var(--deep); letter-spacing: .03em; }
+  .dia-title-lg { font-weight: 700; font-size: 13.5px; fill: var(--deep); }
+  .dia-target { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; font-weight: 600; fill: var(--deep); letter-spacing: .03em; }
+  .dia-feedback-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; fill: var(--deep); font-weight: 600; letter-spacing: .02em; }
+  .dia-tag-danger { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; fill: var(--pending-red); letter-spacing: .04em; text-transform: uppercase; font-weight: 700; }
+  .dia-axis { font-family: 'IBM Plex Mono', monospace; font-size: 10px; fill: var(--ink-faint); letter-spacing: .06em; text-transform: uppercase; }
+
+  /* ---------- Actionables ---------- */
+  .action-progress {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 22px 0 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .action-progress-count { flex-shrink: 0; white-space: nowrap; }
+  .action-progress-count strong { color: var(--ink); font-weight: 600; }
+  .action-progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--line);
+    position: relative;
+    max-width: 220px;
+  }
+  .action-progress-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: var(--deep);
+  }
+  .action-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 12px 0 8px;
+  }
+  .action-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .action-item[data-status="done"] { border-color: var(--deep-line); }
+  .action-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--deep);
+    background: var(--deep-soft);
+    padding: 2px 8px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    letter-spacing: .02em;
+  }
+  .action-text {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink);
+    flex: 1;
+  }
+  .action-text strong { font-weight: 600; }
+  .action-item[data-status="done"] .action-text { color: var(--ink-soft); }
+  .action-check {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--line);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .action-item[data-status="done"] .action-check {
+    background: var(--deep);
+    border-color: var(--deep);
+    color: var(--surface);
+  }
+  .action-item[data-status="done"] .action-check::after { content: "✓"; }
+  .action-item[data-status="pending"] .action-check {
+    background: var(--pending-red-soft);
+    border-color: var(--pending-red);
+    color: var(--pending-red);
+  }
+  .action-item[data-status="pending"] .action-check::after { content: "✗"; }
+  .dia-line-neutral { stroke: var(--ink-faint); stroke-width: 1.3; fill: none; }
+  .dia-line-deep { stroke: var(--deep); stroke-width: 1.3; fill: none; stroke-dasharray: 5,4; }
+  .dia-line-output { stroke: var(--ink); stroke-width: 1.8; fill: none; stroke-linejoin: round; }
+  .dia-guide { stroke: var(--ink-faint); stroke-width: 1; stroke-dasharray: 3,3; opacity: .5; }
+  .dia-guide-strong { stroke: var(--shallow); stroke-width: 1.3; stroke-dasharray: 4,3; }
+  .dia-box-neutral { fill: var(--surface); stroke: var(--ink-faint); stroke-width: 1; }
+  .dia-box-hub { fill: var(--deep-soft); stroke: var(--deep); stroke-width: 1.5; }
+  .dia-box-output { fill: var(--surface); stroke: var(--deep); stroke-width: 1.2; }
+  .dia-box-danger { fill: var(--pending-red-soft); stroke: var(--pending-red); stroke-width: 1.5; }
+  .dia-shade { fill: var(--shallow-soft); stroke: none; }
+
+  .site-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 36px; padding-bottom: 16px; border-bottom: 1px solid var(--line); font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+  .site-nav-home { color: var(--ink); font-weight: 600; text-decoration: none; letter-spacing: .02em; }
+  .site-nav-home:hover { color: var(--deep); }
+  .site-nav-sep { color: var(--ink-faint); }
+  .site-nav-genres { display: flex; flex-wrap: wrap; gap: 8px; }
+  .genre-pill { text-decoration: none; padding: 3px 10px; border: 1px solid var(--line); color: var(--ink-soft); letter-spacing: .03em; text-transform: uppercase; font-size: 10.5px; }
+  .genre-pill:hover { border-color: var(--deep-line); color: var(--ink); }
+  .genre-pill.active { background: var(--deep); border-color: var(--deep); color: var(--surface); }
+  .site-nav-crumb { color: var(--ink-faint); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .03em; }
+  .site-nav-crumb a { text-decoration: none; color: var(--ink-soft); }
+  .site-nav-crumb a:hover { color: var(--deep); }
+</style>
+</head>
+<body>
+
+
+<div class="page">
+
+  <nav class="site-nav">
+    <a class="site-nav-home" href="../../">Book Summaries</a>
+    <span class="site-nav-sep">·</span>
+    <span class="site-nav-genres">
+      <a class="genre-pill active" href="../">Self-Improvement</a>
+    </span>
+    <span class="site-nav-sep">·</span>
+    <span class="site-nav-crumb"><a href="../">Self-Improvement</a> / Thinking in Bets</span>
+  </nav>
+
+  <div class="title-block">
+    <span class="eyebrow">Book Notes — 02</span>
+    <h1>Thinking in Bets</h1>
+    <div class="byline"><strong>Annie Duke</strong> — Making Smarter Decisions When You Don't Have All the Facts (2018)</div>
+    <p class="thesis">Every decision is a bet against an uncertain future — the only real question is whether you're being honest with yourself about the odds you're taking.</p>
+  </div>
+
+  <section>
+    <span class="section-tag">01 — The Core Idea</span>
+    <h2>Life Is Poker, Not Chess</h2>
+    <p>Duke's authority for this book is unusual: she was two years into a cognitive-psychology PhD at Penn under Robert Sternberg when a health crisis forced her out, and a short-term move to Las Vegas to cover bills turned into an 18-year professional poker career — a World Series of Poker bracelet, more than $4 million in tournament winnings, and, more importantly for the book, thousands of hours spent watching smart, motivated people misjudge exactly how much they knew. The core claim: <strong>every decision is a bet</strong> placed against an uncertain future with incomplete information, whether the stakes are a hand of cards, a hiring call, or a marriage. The right mental model for that isn't chess — a game of perfect information where, if you lose, it's because you were outplayed, full stop — it's poker, where cards are hidden, luck sits on top of skill, and a single result tells you frustratingly little about how good the decision behind it actually was.</p>
+    <p>She opens with the case that makes the point unforgettable: Super Bowl XLIX, February 2015. Seattle, trailing New England by four with 26 seconds left, second-and-goal from the 1-yard line — instead of handing off to Marshawn Lynch, one of the league's best short-yardage backs, offensive coordinator Darrell Bevell called a slant pass. Patriots cornerback Malcolm Butler jumped the route and intercepted it, ending the game. Commentators immediately branded it the worst call in Super Bowl history. Duke's point isn't that the call was secretly brilliant — it's that the volume and confidence of that verdict were driven entirely by the interception, not by the decision itself. The pass had sound situational logic behind it (personnel matchups, clock management, a formation built to stop the run), and it carried a low probability of the exact disaster that occurred. A good process met a bad, low-probability outcome. Nobody watching the broadcast could tell the difference, because the only evidence they had was the outcome.</p>
+    <p>Duke names this failure mode <strong>resulting</strong>: judging the quality of a decision by the quality of its outcome, rather than by the reasoning that was actually available at the time it was made. The two are related — better decisions do, on average, produce better outcomes — but they're connected by a layer of luck, and that layer is thick enough that any single result is a noisy, often misleading signal. A good decision can still lose. A bad decision can still win. Confusing the two doesn't just misjudge the past; it corrupts the future, because "it worked" becomes the justification for repeating a decision that was never sound to begin with. The book's whole project is closing that gap — replacing the comfortable language of certainty ("I know," "it'll work") with the more honest language of probability ("I'd put that at around 70%"), because forcing a number out of a belief is what first exposes how much of that belief was actually confidence, and how much was just habit.</p>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <span class="section-tag">02 — The Mechanism</span>
+    <h2>Why resulting feels so right — and is so wrong</h2>
+    <p>Resulting isn't a random lapse in judgment; it's the output of several well-documented biases running in the same direction at once, which is exactly what makes it so hard to notice from the inside.</p>
+
+    <div class="callout">
+      <p><strong>Hindsight bias</strong> (Baruch Fischhoff, 1975): once an outcome is known, the mind quietly rewrites how predictable it felt beforehand — the "I knew it all along" effect. Fischhoff showed subjects a historical account, told some of them the actual outcome and others one of several plausible alternatives, then asked everyone to recall how likely they'd originally thought each outcome was. People who'd been told the true outcome consistently misremembered having rated it as more probable than they actually had. The result you got starts to feel like the only result that was ever really in play — which is precisely the illusion that makes a bad beat feel like a bad decision, and a lucky break feel like foresight.</p>
+    </div>
+
+    <p><strong>Self-serving bias and motivated reasoning:</strong> hindsight bias explains why an outcome distorts memory; these two explain why the distortion always seems to flatter the person doing the remembering. Wins get attributed to skill, losses to luck — and beyond that, existing beliefs act like a lawyer rather than a judge, recruiting whatever evidence supports the story already preferred and quietly discounting whatever doesn't. Duke's sharper point, drawing on Dan Kahan's research into politically motivated reasoning, is that raw intelligence doesn't fix this — it arms it. Smarter people are generally better at constructing a convincing rationalization for what they already wanted to believe, not less inclined to need one. Analytical horsepower spent defending a conclusion is horsepower not spent testing it.</p>
+    <p>Stacked together, these three biases form a closed loop rather than three separate glitches: hindsight bias makes the outcome feel inevitable, self-serving bias decides who gets credit or blame for it, and motivated reasoning supplies the evidence to make that verdict feel objective. Left alone, experience doesn't reliably make people better decision-makers — it just makes their existing story more elaborately defended. The rest of the book is a set of deliberate counterweights against that loop, not a claim that willpower or intelligence can out-think it directly.</p>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <span class="section-tag">03 — The Tools</span>
+    <h2>Four tools, one discipline</h2>
+    <p class="soft">Duke doesn't organize the book as four numbered rules the way some frameworks do, but the practical machinery she builds collapses cleanly into four tools — and, like any real system, using one well depends on the other three being in place too.</p>
+  </section>
+
+  <div class="rule-block">
+    <div class="rule-head">
+      <span class="rule-num">TOOL 01</span>
+      <h3>Bet Your Beliefs</h3>
+    </div>
+    <p>The simplest habit in the book: whenever you state something with certainty, someone asks "wanna bet?" — and instantly, most confident claims soften into something more like "I'd say 80%, maybe less." Forcing a belief into a number you'd actually stake money on does what pure introspection can't: it exposes the real distribution of confidence hiding behind binary language like "I know" or "it'll never happen." Duke draws this straight from poker, where every decision literally is a wager and vague confidence gets expensively corrected within a few hands. Applied outside the felt table, the "wanna bet?" question is less about the literal gambling and more about the discipline it installs — stating beliefs as probabilities rather than certainties, so they can actually be checked against reality later instead of quietly rewritten by hindsight when the outcome lands.</p>
+    <p>The follow-on habit is calibration: tracking your stated confidence against your actual hit rate over time. If everything you call "90% sure" only happens 60% of the time, that gap is diagnostic information about a specific blind spot — not a character flaw to feel bad about, just a number to correct going forward.</p>
+  </div>
+
+  <div class="rule-block">
+    <div class="rule-head">
+      <span class="rule-num">TOOL 02</span>
+      <h3>Build a Truthseeking Pod</h3>
+    </div>
+    <p>Because motivated reasoning defeats solo introspection — you can't fully see your own rationalizations from inside them — Duke's fix is social rather than personal: a small, deliberately chosen group that rewards accuracy and honest dissent over agreement and loyalty. She calls this a truthseeking pod, modeled on how serious poker players dissect hands with rivals after a session, with no ego attached to being wrong in front of each other, because the whole point of the debrief is finding the leak in your own play, not defending it.</p>
+    <p>Two ground rules make a group actually function this way instead of collapsing into another echo chamber. First, the group has to explicitly reward dissent — praising someone for raising an uncomfortable objection, not just tolerating it. Second, disagreement has to stay aimed at the argument, never the person raising it; the moment critique starts to feel like a personal attack, people quietly stop bringing their real objections, and the group's only function disappears. A pod of one — a single person given full context and explicit permission to push back — still beats a pod of zero, which is what most decisions get by default.</p>
+  </div>
+
+  <div class="rule-block">
+    <div class="rule-head">
+      <span class="rule-num">TOOL 03</span>
+      <h3>Kill Resulting on Purpose</h3>
+    </div>
+    <p>If hindsight quietly rewrites your memory of how confident you were, the only real defense is a record that isn't yours to rewrite: writing down the decision, the reasoning behind it, and a stated confidence level <em>before</em> the outcome is known, then reviewing it only later, once the result can't contaminate the memory of the reasoning. Duke calls this keeping the two questions — was it a good decision, and did it have a good outcome — permanently separate, and a written record is what makes the separation enforceable rather than aspirational.</p>
+    <p>The practice sounds like paperwork and functions like an immune system. Without it, every outcome quietly gets absorbed into "I knew it" or "I got unlucky" within days, and the raw material calibration training needs — an honest, untouched account of what you actually believed at the time — is gone before you ever get to learn from it.</p>
+  </div>
+
+  <div class="rule-block">
+    <div class="rule-head">
+      <span class="rule-num">TOOL 04</span>
+      <h3>Time-Travel the Decision</h3>
+    </div>
+    <p>The last tool is a set of techniques Duke groups under "mental time travel" — deliberately stepping outside the emotional pressure of the present moment before locking in a decision, because in-the-moment judgment is exactly where temporal discounting (overweighting how you feel right now against how you'll feel later) does its worst damage.</p>
+
+    <div class="phil-grid">
+      <div class="phil-card">
+        <div class="phil-name">Backcasting</div>
+        <p>Imagine the goal has already been achieved, then work backward to map the specific steps that got there.</p>
+        <p class="ex">Reverses ordinary forecasting — start from the win, not from today.</p>
+      </div>
+      <div class="phil-card">
+        <div class="phil-name">Premortem</div>
+        <p>Imagine the decision has already failed spectacularly, then work backward to explain why.</p>
+        <p class="ex">Borrowed from Gary Klein — normalizes voicing risks people self-censor beforehand.</p>
+      </div>
+      <div class="phil-card">
+        <div class="phil-name">10-10-10</div>
+        <p>How will this look in 10 minutes, 10 months, and 10 years?</p>
+        <p class="ex">Suzy Welch's rule, used to separate the loud present feeling from the quieter long view.</p>
+      </div>
+      <div class="phil-card">
+        <div class="phil-name">Ulysses Contract</div>
+        <p>A precommitment made now, while thinking clearly, that binds the choice you'll face later.</p>
+        <p class="ex">Named for Ulysses lashed to the mast — barrier-inducing (raise the cost of the bad option) or barrier-reducing (remove friction from the good one).</p>
+      </div>
+    </div>
+
+    <p>None of these techniques require new information — they work by relocating the decision to a calmer vantage point than the one you're standing in when the pressure is highest, which is usually the exact moment judgment is least trustworthy.</p>
+  </div>
+
+  <hr class="rule">
+
+  <section>
+    <span class="section-tag">04 — Synthesis</span>
+    <h2>Reading the tools as one loop</h2>
+    <p>The four tools aren't a menu to pick from — they protect each other. Betting your beliefs (Tool 1) only produces useful calibration data if the record of what you actually predicted survives contact with the outcome, which is what killing resulting on purpose (Tool 3) exists to guarantee. But an honest record still can't catch what you can't see about your own reasoning — motivated reasoning defeats introspection from the inside — so the truthseeking pod (Tool 2) is the check that operates from outside your own head. And all three of those tools still have to survive the moment of maximum emotional pressure, which is exactly what mental time travel (Tool 4) is built to protect against, by moving the decision to a vantage point where panic, sunk cost, and temporal discounting have less leverage.</p>
+    <p>Skip any one and the loop quietly degrades: calibration without a clean record just becomes a more sophisticated version of resulting; a truthseeking pod without a real record to review argues about memories instead of facts; and even a perfect decision process collapses under enough same-day pressure if nothing forces a pause first.</p>
+    <p class="soft">For someone running a company rather than reporting to one, almost every consequential call — a pricing decision, a hire, whether to keep pushing a channel that hasn't converted yet, how to read an investor's silence — is a bet made with a fraction of the relevant information, under exactly the kind of pressure the book warns about. A one-line decision journal costs a few minutes and turns "did that GTM experiment work" from a vibe into a dataset. A single truthseeking partner — a co-founder, an advisor, anyone with context and explicit license to disagree — is often the only check against resulting on your own hardest calls, because founders are usually the last people able to see their own motivated reasoning about a project they're emotionally invested in keeping alive.</p>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <span class="section-tag">05 — Mapped Out</span>
+    <h2>The whole argument, as one chart</h2>
+    <p class="soft">The claim at the top, the failure mode it's built to counter, the biases that drive that failure mode, the four tools that act on those biases, and the payoff that closes the loop. Each box carries its own why, not just its name — read top to bottom and the chart stands on its own.</p>
+  </section>
+
+  <figure class="diagram">
+    <div class="diagram-scroll">
+      <svg viewBox="0 0 600 1460" role="img" aria-label="Flowchart: decisions are bets on an uncertain future, which leads into two ideas — poker not chess, and the failure mode called resulting — which together explain why resulting sticks: a closed loop of hindsight bias and self-serving/motivated reasoning. Four tools act on that loop: Bet Your Beliefs builds calibration, Truthseeking Pod catches blind spots, Kill Resulting protects the record, Time-Travel the Decision protects the future self from present pressure. All four feed a calibrated decision process, which produces confidence that tracks reality and learning that compounds cleanly, which reinforce the tools on the next decision.">
+        <defs>
+          <marker id="arrow-a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--ink-faint)"/>
+          </marker>
+          <marker id="arrow-b2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--deep)"/>
+          </marker>
+        </defs>
+
+        <!-- ROW 0 — CLAIM -->
+        <rect x="25" y="20" width="550" height="110" rx="6" class="dia-box-hub"/>
+        <text x="300" y="42" text-anchor="middle" class="dia-label">THE CLAIM</text>
+        <text x="300" y="63" text-anchor="middle" class="dia-title-lg">Decisions are bets on an uncertain future</text>
+        <text x="300" y="84" text-anchor="middle" class="dia-sub">Outcomes are noisy signals of decision quality —</text>
+        <text x="300" y="98" text-anchor="middle" class="dia-sub">judge the bet, not the card that flipped.</text>
+
+        <!-- bus 0 -> 1 -->
+        <line x1="300" y1="130" x2="300" y2="145" class="dia-line-neutral"/>
+        <line x1="155" y1="145" x2="445" y2="145" class="dia-line-neutral"/>
+        <line x1="155" y1="145" x2="155" y2="159" class="dia-line-neutral" marker-end="url(#arrow-a2)"/>
+        <line x1="445" y1="145" x2="445" y2="159" class="dia-line-neutral" marker-end="url(#arrow-a2)"/>
+
+        <!-- ROW 1a -->
+        <rect x="25" y="160" width="260" height="150" rx="5" class="dia-box-neutral"/>
+        <text x="155" y="182" text-anchor="middle" class="dia-label">POKER, NOT CHESS</text>
+        <text x="155" y="203" text-anchor="middle" class="dia-title">Hidden cards + real luck</text>
+        <text x="155" y="225" text-anchor="middle" class="dia-sub">Chess: perfect information, no luck —</text>
+        <text x="155" y="239" text-anchor="middle" class="dia-sub">lose and it's purely your play. Poker</text>
+        <text x="155" y="253" text-anchor="middle" class="dia-sub">hides information and layers on luck.</text>
+        <text x="155" y="277" text-anchor="middle" class="dia-tiny">→ most real decisions are poker</text>
+
+        <rect x="315" y="160" width="260" height="150" rx="5" class="dia-box-neutral"/>
+        <text x="445" y="182" text-anchor="middle" class="dia-label">THE FAILURE MODE</text>
+        <text x="445" y="203" text-anchor="middle" class="dia-title">"Resulting"</text>
+        <text x="445" y="225" text-anchor="middle" class="dia-sub">Grading a decision by how it turned</text>
+        <text x="445" y="239" text-anchor="middle" class="dia-sub">out, not by the reasoning that was</text>
+        <text x="445" y="253" text-anchor="middle" class="dia-sub">available at the time it was made.</text>
+        <text x="445" y="277" text-anchor="middle" class="dia-tiny">→ named for Pete Carroll's Super Bowl call</text>
+
+        <!-- bus 1a -> 1b -->
+        <line x1="155" y1="310" x2="155" y2="322" class="dia-line-neutral"/>
+        <line x1="445" y1="310" x2="445" y2="322" class="dia-line-neutral"/>
+        <line x1="155" y1="322" x2="445" y2="322" class="dia-line-neutral"/>
+        <line x1="300" y1="322" x2="300" y2="334" class="dia-line-neutral" marker-end="url(#arrow-a2)"/>
+
+        <!-- ROW 1b -->
+        <rect x="25" y="335" width="550" height="115" rx="5" class="dia-box-neutral"/>
+        <text x="300" y="357" text-anchor="middle" class="dia-label">WHY IT STICKS</text>
+        <text x="300" y="378" text-anchor="middle" class="dia-title">A closed loop that rewrites the past</text>
+        <text x="300" y="399" text-anchor="middle" class="dia-sub">Hindsight bias, self-serving bias, and motivated</text>
+        <text x="300" y="413" text-anchor="middle" class="dia-sub">reasoning work together to make every outcome feel earned.</text>
+        <text x="300" y="436" text-anchor="middle" class="dia-tiny">→ two mechanisms, unpacked below</text>
+
+        <!-- bus 1b -> 2 -->
+        <line x1="300" y1="450" x2="300" y2="465" class="dia-line-neutral"/>
+        <line x1="155" y1="465" x2="445" y2="465" class="dia-line-neutral"/>
+        <line x1="155" y1="465" x2="155" y2="479" class="dia-line-neutral" marker-end="url(#arrow-a2)"/>
+        <line x1="445" y1="465" x2="445" y2="479" class="dia-line-neutral" marker-end="url(#arrow-a2)"/>
+
+        <!-- ROW 2 -->
+        <rect x="25" y="480" width="260" height="150" rx="5" class="dia-box-neutral"/>
+        <text x="155" y="502" text-anchor="middle" class="dia-label">MECHANISM · 1</text>
+        <text x="155" y="523" text-anchor="middle" class="dia-title">Hindsight bias — Fischhoff, 1975</text>
+        <text x="155" y="545" text-anchor="middle" class="dia-sub">Once you know how it turned out,</text>
+        <text x="155" y="559" text-anchor="middle" class="dia-sub">the result feels like it was obvious</text>
+        <text x="155" y="573" text-anchor="middle" class="dia-sub">and inevitable all along.</text>
+        <text x="155" y="597" text-anchor="middle" class="dia-tiny">→ erases how uncertain it</text>
+        <text x="155" y="611" text-anchor="middle" class="dia-tiny">actually felt in the moment</text>
+
+        <rect x="315" y="480" width="260" height="150" rx="5" class="dia-box-neutral"/>
+        <text x="445" y="502" text-anchor="middle" class="dia-label">MECHANISM · 2</text>
+        <text x="445" y="523" text-anchor="middle" class="dia-title">Self-serving + motivated reasoning</text>
+        <text x="445" y="545" text-anchor="middle" class="dia-sub">Wins get credited to skill, losses</text>
+        <text x="445" y="559" text-anchor="middle" class="dia-sub">to luck — existing beliefs recruit</text>
+        <text x="445" y="573" text-anchor="middle" class="dia-sub">whatever evidence already fits.</text>
+        <text x="445" y="597" text-anchor="middle" class="dia-tiny">→ smarter people are often better</text>
+        <text x="445" y="611" text-anchor="middle" class="dia-tiny">at rationalizing, not less prone to it</text>
+
+        <!-- bus 2 -> 3 -->
+        <line x1="155" y1="630" x2="155" y2="642" class="dia-line-neutral"/>
+        <line x1="445" y1="630" x2="445" y2="642" class="dia-line-neutral"/>
+        <line x1="155" y1="642" x2="445" y2="642" class="dia-line-neutral"/>
+        <line x1="155" y1="642" x2="155" y2="654" class="dia-line-neutral" marker-end="url(#arrow-a2)"/>
+        <line x1="445" y1="642" x2="445" y2="654" class="dia-line-neutral" marker-end="url(#arrow-a2)"/>
+
+        <!-- ROW 3a -->
+        <rect x="25" y="655" width="260" height="195" rx="5" class="dia-box-neutral"/>
+        <text x="155" y="678" text-anchor="middle" class="dia-label">TOOL 1</text>
+        <text x="155" y="700" text-anchor="middle" class="dia-title">Bet Your Beliefs</text>
+        <text x="155" y="719" text-anchor="middle" class="dia-target">builds: CALIBRATION</text>
+        <text x="155" y="740" text-anchor="middle" class="dia-tiny">Say a confidence number, not a</text>
+        <text x="155" y="754" text-anchor="middle" class="dia-tiny">certainty — vague belief gets exposed.</text>
+        <text x="155" y="778" text-anchor="middle" class="dia-tiny">test: would you actually take</text>
+        <text x="155" y="792" text-anchor="middle" class="dia-tiny">that bet at those odds?</text>
+
+        <rect x="315" y="655" width="260" height="195" rx="5" class="dia-box-neutral"/>
+        <text x="445" y="678" text-anchor="middle" class="dia-label">TOOL 2</text>
+        <text x="445" y="700" text-anchor="middle" class="dia-title">Truthseeking Pod</text>
+        <text x="445" y="719" text-anchor="middle" class="dia-target">catches: BLIND SPOTS</text>
+        <text x="445" y="740" text-anchor="middle" class="dia-tiny">Small group, explicitly rewarded</text>
+        <text x="445" y="754" text-anchor="middle" class="dia-tiny">for dissent, not agreement.</text>
+        <text x="445" y="778" text-anchor="middle" class="dia-tiny">test: does it attack the argument,</text>
+        <text x="445" y="792" text-anchor="middle" class="dia-tiny">never the person?</text>
+
+        <!-- bus 3a -> 3b -->
+        <line x1="155" y1="850" x2="155" y2="862" class="dia-line-neutral"/>
+        <line x1="445" y1="850" x2="445" y2="862" class="dia-line-neutral"/>
+        <line x1="155" y1="862" x2="445" y2="862" class="dia-line-neutral"/>
+        <line x1="155" y1="862" x2="155" y2="874" class="dia-line-neutral" marker-end="url(#arrow-a2)"/>
+        <line x1="445" y1="862" x2="445" y2="874" class="dia-line-neutral" marker-end="url(#arrow-a2)"/>
+
+        <!-- ROW 3b -->
+        <rect x="25" y="875" width="260" height="195" rx="5" class="dia-box-neutral"/>
+        <text x="155" y="898" text-anchor="middle" class="dia-label">TOOL 3</text>
+        <text x="155" y="920" text-anchor="middle" class="dia-title">Kill Resulting</text>
+        <text x="155" y="939" text-anchor="middle" class="dia-target">protects: THE RECORD</text>
+        <text x="155" y="960" text-anchor="middle" class="dia-tiny">Log the reasoning before the</text>
+        <text x="155" y="974" text-anchor="middle" class="dia-tiny">outcome is known — review it later.</text>
+        <text x="155" y="998" text-anchor="middle" class="dia-tiny">method: a decision journal,</text>
+        <text x="155" y="1012" text-anchor="middle" class="dia-tiny">reviewed only after the fact</text>
+
+        <rect x="315" y="875" width="260" height="195" rx="5" class="dia-box-neutral"/>
+        <text x="445" y="898" text-anchor="middle" class="dia-label">TOOL 4</text>
+        <text x="445" y="920" text-anchor="middle" class="dia-title">Time-Travel the Decision</text>
+        <text x="445" y="939" text-anchor="middle" class="dia-target">protects: FUTURE SELF</text>
+        <text x="445" y="960" text-anchor="middle" class="dia-tiny">Premortem, backcast, 10-10-10 —</text>
+        <text x="445" y="974" text-anchor="middle" class="dia-tiny">step outside today's pressure.</text>
+        <text x="445" y="998" text-anchor="middle" class="dia-tiny">method: 4 techniques + a</text>
+        <text x="445" y="1012" text-anchor="middle" class="dia-tiny">Ulysses contract to lock it in</text>
+
+        <!-- bus 3b -> 4 -->
+        <line x1="155" y1="1070" x2="155" y2="1082" class="dia-line-neutral"/>
+        <line x1="445" y1="1070" x2="445" y2="1082" class="dia-line-neutral"/>
+        <line x1="155" y1="1082" x2="445" y2="1082" class="dia-line-neutral"/>
+        <line x1="300" y1="1082" x2="300" y2="1094" class="dia-line-neutral" marker-end="url(#arrow-a2)"/>
+
+        <!-- ROW 4 -->
+        <rect x="150" y="1095" width="300" height="145" rx="6" class="dia-box-hub"/>
+        <text x="300" y="1117" text-anchor="middle" class="dia-label">THE CONVERGENCE</text>
+        <text x="300" y="1140" text-anchor="middle" class="dia-title-lg">A CALIBRATED DECISION PROCESS</text>
+        <text x="300" y="1161" text-anchor="middle" class="dia-sub">confidence + a clean record</text>
+        <text x="300" y="1175" text-anchor="middle" class="dia-sub">+ outside eyes, together</text>
+        <text x="300" y="1198" text-anchor="middle" class="dia-tiny">(one honest bet, actually placed)</text>
+
+        <!-- bus 4 -> 5 -->
+        <line x1="300" y1="1240" x2="300" y2="1252" class="dia-line-neutral"/>
+        <line x1="155" y1="1252" x2="445" y2="1252" class="dia-line-neutral"/>
+        <line x1="155" y1="1252" x2="155" y2="1264" class="dia-line-neutral" marker-end="url(#arrow-a2)"/>
+        <line x1="445" y1="1252" x2="445" y2="1264" class="dia-line-neutral" marker-end="url(#arrow-a2)"/>
+
+        <!-- ROW 5 -->
+        <rect x="25" y="1265" width="260" height="130" rx="5" class="dia-box-output"/>
+        <text x="155" y="1287" text-anchor="middle" class="dia-label">RESULT · 1</text>
+        <text x="155" y="1309" text-anchor="middle" class="dia-title-lg">Confidence tracks reality</text>
+        <text x="155" y="1330" text-anchor="middle" class="dia-sub">your stated odds and your actual</text>
+        <text x="155" y="1344" text-anchor="middle" class="dia-sub">hit rate converge over time</text>
+        <text x="155" y="1366" text-anchor="middle" class="dia-tiny">(calibration)</text>
+
+        <rect x="315" y="1265" width="260" height="130" rx="5" class="dia-box-output"/>
+        <text x="445" y="1287" text-anchor="middle" class="dia-label">RESULT · 2</text>
+        <text x="445" y="1309" text-anchor="middle" class="dia-title-lg">Learning compounds, cleanly</text>
+        <text x="445" y="1330" text-anchor="middle" class="dia-sub">you're updating on signal, not</text>
+        <text x="445" y="1344" text-anchor="middle" class="dia-sub">on luck dressed up as skill</text>
+        <text x="445" y="1366" text-anchor="middle" class="dia-tiny">(better bets, next time)</text>
+
+        <!-- feedback loop -->
+        <line x1="155" y1="1395" x2="155" y2="1412" class="dia-line-deep"/>
+        <line x1="12" y1="1412" x2="155" y2="1412" class="dia-line-deep"/>
+        <line x1="12" y1="1412" x2="12" y2="972" class="dia-line-deep"/>
+        <line x1="12" y1="972" x2="24" y2="972" class="dia-line-deep" marker-end="url(#arrow-b2)"/>
+
+        <line x1="445" y1="1395" x2="445" y2="1412" class="dia-line-deep"/>
+        <line x1="445" y1="1412" x2="588" y2="1412" class="dia-line-deep"/>
+        <line x1="588" y1="1412" x2="588" y2="972" class="dia-line-deep"/>
+        <line x1="588" y1="972" x2="576" y2="972" class="dia-line-deep" marker-end="url(#arrow-b2)"/>
+
+        <text x="300" y="1432" text-anchor="middle" class="dia-feedback-label">compounds → next bet's calibration and</text>
+        <text x="300" y="1446" text-anchor="middle" class="dia-feedback-label">pod feedback get sharper to read</text>
+      </svg>
+    </div>
+    <figcaption>The full shape of the argument: a claim, the failure mode it's fighting, the two biases that drive that failure mode, the four tools that act on those biases, and the compounding payoff that reinforces the tools on the next decision.</figcaption>
+  </figure>
+
+  <figure class="diagram">
+    <div class="diagram-scroll">
+      <svg viewBox="0 0 600 480" role="img" aria-label="Close-up: a two-by-two grid of decision quality against outcome quality. Good decision with bad outcome is a bad beat, caused by variance, not a bad process. Good decision with good outcome is a deserved win. Bad decision with bad outcome is a deserved loss. Bad decision with good outcome is fooled by luck — the most dangerous quadrant, because a lucky bad decision gets repeated.">
+        <text x="185" y="30" text-anchor="middle" class="dia-axis">BAD OUTCOME</text>
+        <text x="455" y="30" text-anchor="middle" class="dia-axis">GOOD OUTCOME</text>
+        <text x="35" y="135" text-anchor="middle" class="dia-axis" transform="rotate(-90, 35, 135)">GOOD DECISION</text>
+        <text x="35" y="325" text-anchor="middle" class="dia-axis" transform="rotate(-90, 35, 325)">BAD DECISION</text>
+
+        <!-- top-left: good decision, bad outcome -->
+        <rect x="60" y="50" width="250" height="170" rx="5" class="dia-box-output"/>
+        <text x="185" y="74" text-anchor="middle" class="dia-label">GOOD DECISION + BAD OUTCOME</text>
+        <text x="185" y="98" text-anchor="middle" class="dia-title-lg">Bad Beat</text>
+        <text x="185" y="120" text-anchor="middle" class="dia-sub">Sound reasoning, low-probability</text>
+        <text x="185" y="134" text-anchor="middle" class="dia-sub">disaster — this is variance,</text>
+        <text x="185" y="148" text-anchor="middle" class="dia-sub">not a process failure.</text>
+        <text x="185" y="172" text-anchor="middle" class="dia-tiny">e.g. Carroll's Super Bowl XLIX call</text>
+        <text x="185" y="196" text-anchor="middle" class="dia-tiny">→ don't punish this decision</text>
+
+        <!-- top-right: good decision, good outcome -->
+        <rect x="330" y="50" width="250" height="170" rx="5" class="dia-box-output"/>
+        <text x="455" y="74" text-anchor="middle" class="dia-label">GOOD DECISION + GOOD OUTCOME</text>
+        <text x="455" y="98" text-anchor="middle" class="dia-title-lg">Deserved Win</text>
+        <text x="455" y="120" text-anchor="middle" class="dia-sub">Sound reasoning met a likely</text>
+        <text x="455" y="134" text-anchor="middle" class="dia-sub">result — the good process gets</text>
+        <text x="455" y="148" text-anchor="middle" class="dia-sub">to take real credit here.</text>
+        <text x="455" y="196" text-anchor="middle" class="dia-tiny">→ this is the only quadrant to</text>
+        <text x="455" y="210" text-anchor="middle" class="dia-tiny">learn a repeatable lesson from</text>
+
+        <!-- bottom-left: bad decision, bad outcome -->
+        <rect x="60" y="240" width="250" height="170" rx="5" class="dia-box-neutral"/>
+        <text x="185" y="264" text-anchor="middle" class="dia-label">BAD DECISION + BAD OUTCOME</text>
+        <text x="185" y="288" text-anchor="middle" class="dia-title-lg">Deserved Loss</text>
+        <text x="185" y="310" text-anchor="middle" class="dia-sub">Weak reasoning met the result</text>
+        <text x="185" y="324" text-anchor="middle" class="dia-sub">it deserved — the rare case</text>
+        <text x="185" y="338" text-anchor="middle" class="dia-sub">where the verdict is honest.</text>
+        <text x="185" y="386" text-anchor="middle" class="dia-tiny">→ fix the process, not just the mood</text>
+
+        <!-- bottom-right: bad decision, good outcome -->
+        <rect x="330" y="240" width="250" height="170" rx="5" class="dia-box-danger"/>
+        <text x="455" y="264" text-anchor="middle" class="dia-tag-danger">BAD DECISION + GOOD OUTCOME</text>
+        <text x="455" y="288" text-anchor="middle" class="dia-title-lg">Fooled by Luck</text>
+        <text x="455" y="310" text-anchor="middle" class="dia-sub">Weak reasoning got bailed out —</text>
+        <text x="455" y="324" text-anchor="middle" class="dia-sub">and the win makes the bad</text>
+        <text x="455" y="338" text-anchor="middle" class="dia-sub">process feel validated.</text>
+        <text x="455" y="386" text-anchor="middle" class="dia-tiny">→ the dangerous quadrant: it gets repeated</text>
+      </svg>
+    </div>
+    <figcaption>The resulting trap, zoomed in: only the diagonal from bottom-left to top-right rewards honest judgment. The other diagonal is where resulting does its damage — punishing a good decision for bad luck, or worse, rewarding a bad one for good luck and teaching you to repeat it.</figcaption>
+  </figure>
+
+  <hr class="rule">
+
+  <section>
+    <span class="section-tag">06 — Do This</span>
+    <h2>Ten actions, not ten insights</h2>
+    <p class="soft">The chart above is the shape of the argument. This is what changes on the calendar this week.</p>
+  </section>
+
+  <div class="action-progress">
+    <span class="action-progress-count"><strong>0</strong> / 10 done</span>
+    <span class="action-progress-bar"><span class="action-progress-fill" style="width:0%"></span></span>
+  </div>
+
+  <div class="action-list">
+    <div class="action-item" data-status="pending"><span class="action-num">01</span><span class="action-text"><strong>Before your next big call, state your confidence as a number.</strong> Not "I think this'll work" — "I'd put this at roughly 65%." Say it out loud or write it down before you act.</span><span class="action-check" title="Pending"></span></div>
+    <div class="action-item" data-status="pending"><span class="action-num">02</span><span class="action-text"><strong>Start a one-line decision journal.</strong> For every consequential call: the decision, the reasoning, and your confidence % — logged before the outcome is known, reviewed only 30+ days later.</span><span class="action-check" title="Pending"></span></div>
+    <div class="action-item" data-status="pending"><span class="action-num">03</span><span class="action-text"><strong>Name one person as your truthseeking pod.</strong> Someone who gets full context and explicit permission to argue back — then tell them plainly that's the job.</span><span class="action-check" title="Pending"></span></div>
+    <div class="action-item" data-status="pending"><span class="action-num">04</span><span class="action-text"><strong>Next time a bet pays off, ask before celebrating: skill or luck?</strong> Check it against what you actually wrote down beforehand, not what feels true now.</span><span class="action-check" title="Pending"></span></div>
+    <div class="action-item" data-status="pending"><span class="action-num">05</span><span class="action-text"><strong>Next time a bet fails, ask the same question before scrapping the approach.</strong> A bad beat and a bad decision look identical from the outside — the journal is the only way to tell them apart.</span><span class="action-check" title="Pending"></span></div>
+    <div class="action-item" data-status="pending"><span class="action-num">06</span><span class="action-text"><strong>Run a premortem on your next major decision.</strong> Assume it's failed in 12 months — write the obituary, then work backward to what caused it.</span><span class="action-check" title="Pending"></span></div>
+    <div class="action-item" data-status="pending"><span class="action-num">07</span><span class="action-text"><strong>Run the 10-10-10 test on one emotionally loaded decision this week.</strong> How will it look in 10 minutes, 10 months, 10 years — write all three down, not just the first.</span><span class="action-check" title="Pending"></span></div>
+    <div class="action-item" data-status="pending"><span class="action-num">08</span><span class="action-text"><strong>Build one Ulysses contract for a temptation you already know derails you.</strong> A scheduled public check-in, an automatic transfer, a deleted app — pick the friction before you need the willpower.</span><span class="action-check" title="Pending"></span></div>
+    <div class="action-item" data-status="pending"><span class="action-num">09</span><span class="action-text"><strong>In your next disagreement, restate the other side's position before arguing yours.</strong> If you can't say it back accurately, you're not actually disagreeing with it yet.</span><span class="action-check" title="Pending"></span></div>
+    <div class="action-item" data-status="pending"><span class="action-num">10</span><span class="action-text"><strong>Audit one belief you hold with total certainty.</strong> Would you bet real money on it at even odds? If not, downgrade the language you use for it in conversation this week.</span><span class="action-check" title="Pending"></span></div>
+  </div>
+
+  <footer>Annie Duke — Thinking in Bets (Portfolio/Penguin, 2018) · Notes, not excerpts<br><br><a href="../">← More Self-Improvement summaries</a> · <a href="../../">All genres</a></footer>
+
+</div>
+
+</body>
+</html>
