@@ -153,6 +153,13 @@
   strong { font-weight: 600; }
   em { font-style: italic; }
 
+  /* ---------- Mini list ---------- */
+  .mini-list { margin: 0 0 16px; padding-left: 0; list-style: none; }
+  .mini-list li { position: relative; padding-left: 22px; margin-bottom: 10px; color: var(--ink); }
+  .mini-list li:last-child { margin-bottom: 0; }
+  .mini-list li::before { content: "—"; position: absolute; left: 0; color: var(--deep); font-weight: 600; }
+  .mini-list li strong { font-weight: 600; }
+
   /* ---------- Callout ---------- */
   .callout {
     background: var(--deep-soft);
@@ -476,7 +483,12 @@
       </div>
     </div>
 
-    <p>Two tactics work across all four: <strong>rituals</strong> — a fixed location, time, and startup behavior that signal "this is deep work now" and lower the friction of starting — and <strong>grand gestures</strong>, an unusual, sometimes costly change of environment that raises the perceived stakes of the work. J.K. Rowling checked into a five-star Edinburgh hotel to finish the final Harry Potter book; Bill Gates took twice-yearly solitary "Think Weeks" at a cabin. Newport also borrows the 4 Disciplines of Execution from business strategy: track <em>lead measures</em> (hours of deep work logged) rather than <em>lag measures</em> (revenue, which arrives too late to steer daily behavior), keep a visible scoreboard, and review weekly.</p>
+    <p>Two tactics work across all four philosophies:</p>
+    <ul class="mini-list">
+      <li><strong>Rituals</strong> — a fixed location, time, and startup behavior that signal "this is deep work now" and lower the friction of starting.</li>
+      <li><strong>Grand gestures</strong> — an unusual, sometimes costly change of environment that raises the perceived stakes of the work. J.K. Rowling checked into a five-star Edinburgh hotel to finish the final Harry Potter book; Bill Gates took twice-yearly solitary "Think Weeks" at a cabin.</li>
+    </ul>
+    <p>Newport also borrows the 4 Disciplines of Execution from business strategy: track <em>lead measures</em> (hours of deep work logged) rather than <em>lag measures</em> (revenue, which arrives too late to steer daily behavior), keep a visible scoreboard, and review weekly.</p>
     <p>The rule also insists on genuine downtime — a fixed <strong>shutdown ritual</strong> at day's end that tells your brain every open task is either finished or captured somewhere trustworthy. That's what frees unconscious insight to keep working overnight, and what keeps the next day's willpower reserve from starting already drained.</p>
   </div>
 
@@ -509,7 +521,13 @@
       <span class="tag">The depth test</span>
       How many months would it take to train a smart recent graduate, with no specialized background, to do this task competently? A low answer marks shallow work worth eliminating, batching, or delegating.
     </div>
-    <p>Other tactics: schedule every minute of the workday in advance, in blocks revised as the day evolves, rather than left to reactive drift; ask for an explicit <strong>shallow-work budget</strong> so prioritization gets forced upward instead of defaulting to "handle everything"; become harder to reach, shifting the cost of a request back onto whoever's sending it instead of it landing free on you; and adopt <strong>fixed-schedule productivity</strong> — commit to a hard stop time and let that scarcity force ruthless triage of what's actually deep, rather than letting shallow tasks expand to consume whatever hours happen to be available.</p>
+    <p>Other tactics:</p>
+    <ul class="mini-list">
+      <li><strong>Schedule every minute</strong> of the workday in advance, in blocks revised as the day evolves, rather than left to reactive drift.</li>
+      <li><strong>Ask for an explicit shallow-work budget</strong> so prioritization gets forced upward instead of defaulting to "handle everything."</li>
+      <li><strong>Become harder to reach</strong>, shifting the cost of a request back onto whoever's sending it instead of it landing free on you.</li>
+      <li><strong>Adopt fixed-schedule productivity</strong> — commit to a hard stop time and let that scarcity force ruthless triage of what's actually deep, rather than letting shallow tasks expand to consume whatever hours happen to be available.</li>
+    </ul>
   </div>
 
   <hr class="rule">
@@ -517,7 +535,13 @@
   <section>
     <span class="section-tag">04 — Synthesis</span>
     <h2>Reading the rules as one loop</h2>
-    <p>The four rules aren't independent tactics — they're a feedback loop. Rule 1 builds the skill by protecting structured time to go deep. Rule 2 removes the antagonist: the moment-to-moment habit that erodes the skill outside of work hours. Rule 3 protects the input — attention itself — by gatekeeping what's allowed to compete for it. Rule 4 protects the container: the calendar space the other three depend on existing at all.</p>
+    <p>The four rules aren't independent tactics — they're a feedback loop:</p>
+    <ul class="mini-list">
+      <li><strong>Rule 1</strong> builds the skill by protecting structured time to go deep.</li>
+      <li><strong>Rule 2</strong> removes the antagonist: the moment-to-moment habit that erodes the skill outside of work hours.</li>
+      <li><strong>Rule 3</strong> protects the input — attention itself — by gatekeeping what's allowed to compete for it.</li>
+      <li><strong>Rule 4</strong> protects the container: the calendar space the other three depend on existing at all.</li>
+    </ul>
     <p>Skip any one and the others quietly fail. Scheduling deep blocks without draining the shallows just means the blocks get cannibalized by "urgent" admin the moment it appears. Quitting social media without training boredom tolerance just relocates the itch to whatever app is still installed.</p>
     <p class="soft">For someone running a company rather than reporting to one, the leverage point moves: there's no boss to hand you a shallow-work budget, so it has to be self-imposed — and the temptation to mistake founder-busyness (inbox zero, instant replies, visible availability) for founder-productivity is exactly the "busyness as proxy" trap the book describes, with the added twist that as the one setting the norm, rewarding fast replies is what trains a team to keep interrupting you. Bimodal or rhythmic scheduling tends to fit an operator role better than monastic withdrawal: ring-fence recurring deep blocks around the parts of the job that are genuinely reactive by nature, rather than pretending the role allows full retreat.</p>
   </section>

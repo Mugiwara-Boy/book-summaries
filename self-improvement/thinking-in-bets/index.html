@@ -153,6 +153,13 @@
   strong { font-weight: 600; }
   em { font-style: italic; }
 
+  /* ---------- Mini list ---------- */
+  .mini-list { margin: 0 0 16px; padding-left: 0; list-style: none; }
+  .mini-list li { position: relative; padding-left: 22px; margin-bottom: 10px; color: var(--ink); }
+  .mini-list li:last-child { margin-bottom: 0; }
+  .mini-list li::before { content: "—"; position: absolute; left: 0; color: var(--deep); font-weight: 600; }
+  .mini-list li strong { font-weight: 600; }
+
   /* ---------- Callout ---------- */
   .callout {
     background: var(--deep-soft);
@@ -432,7 +439,13 @@
     </div>
 
     <p><strong>Self-serving bias and motivated reasoning:</strong> hindsight bias explains why an outcome distorts memory; these two explain why the distortion always seems to flatter the person doing the remembering. Wins get attributed to skill, losses to luck — and beyond that, existing beliefs act like a lawyer rather than a judge, recruiting whatever evidence supports the story already preferred and quietly discounting whatever doesn't. Duke's sharper point, drawing on Dan Kahan's research into politically motivated reasoning, is that raw intelligence doesn't fix this — it arms it. Smarter people are generally better at constructing a convincing rationalization for what they already wanted to believe, not less inclined to need one. Analytical horsepower spent defending a conclusion is horsepower not spent testing it.</p>
-    <p>Stacked together, these three biases form a closed loop rather than three separate glitches: hindsight bias makes the outcome feel inevitable, self-serving bias decides who gets credit or blame for it, and motivated reasoning supplies the evidence to make that verdict feel objective. Left alone, experience doesn't reliably make people better decision-makers — it just makes their existing story more elaborately defended. The rest of the book is a set of deliberate counterweights against that loop, not a claim that willpower or intelligence can out-think it directly.</p>
+    <p>Stacked together, these three biases form a closed loop rather than three separate glitches:</p>
+    <ul class="mini-list">
+      <li><strong>Hindsight bias</strong> makes the outcome feel inevitable.</li>
+      <li><strong>Self-serving bias</strong> decides who gets credit or blame for it.</li>
+      <li><strong>Motivated reasoning</strong> supplies the evidence to make that verdict feel objective.</li>
+    </ul>
+    <p>Left alone, experience doesn't reliably make people better decision-makers — it just makes their existing story more elaborately defended. The rest of the book is a set of deliberate counterweights against that loop, not a claim that willpower or intelligence can out-think it directly.</p>
   </section>
 
   <hr class="rule">
@@ -458,7 +471,12 @@
       <h3>Build a Truthseeking Pod</h3>
     </div>
     <p>Because motivated reasoning defeats solo introspection — you can't fully see your own rationalizations from inside them — Duke's fix is social rather than personal: a small, deliberately chosen group that rewards accuracy and honest dissent over agreement and loyalty. She calls this a truthseeking pod, modeled on how serious poker players dissect hands with rivals after a session, with no ego attached to being wrong in front of each other, because the whole point of the debrief is finding the leak in your own play, not defending it.</p>
-    <p>Two ground rules make a group actually function this way instead of collapsing into another echo chamber. First, the group has to explicitly reward dissent — praising someone for raising an uncomfortable objection, not just tolerating it. Second, disagreement has to stay aimed at the argument, never the person raising it; the moment critique starts to feel like a personal attack, people quietly stop bringing their real objections, and the group's only function disappears. A pod of one — a single person given full context and explicit permission to push back — still beats a pod of zero, which is what most decisions get by default.</p>
+    <p>Two ground rules make a group actually function this way instead of collapsing into another echo chamber:</p>
+    <ul class="mini-list">
+      <li><strong>Reward dissent explicitly</strong> — praise someone for raising an uncomfortable objection, don't just tolerate it.</li>
+      <li><strong>Attack the argument, never the person.</strong> The moment critique starts to feel like a personal attack, people quietly stop bringing their real objections, and the group's only function disappears.</li>
+    </ul>
+    <p>A pod of one — a single person given full context and explicit permission to push back — still beats a pod of zero, which is what most decisions get by default.</p>
   </div>
 
   <div class="rule-block">
@@ -508,7 +526,12 @@
   <section>
     <span class="section-tag">04 — Synthesis</span>
     <h2>Reading the tools as one loop</h2>
-    <p>The four tools aren't a menu to pick from — they protect each other. Betting your beliefs (Tool 1) only produces useful calibration data if the record of what you actually predicted survives contact with the outcome, which is what killing resulting on purpose (Tool 3) exists to guarantee. But an honest record still can't catch what you can't see about your own reasoning — motivated reasoning defeats introspection from the inside — so the truthseeking pod (Tool 2) is the check that operates from outside your own head. And all three of those tools still have to survive the moment of maximum emotional pressure, which is exactly what mental time travel (Tool 4) is built to protect against, by moving the decision to a vantage point where panic, sunk cost, and temporal discounting have less leverage.</p>
+    <p>The four tools aren't a menu to pick from — they protect each other in sequence:</p>
+    <ul class="mini-list">
+      <li><strong>Tool 1 needs Tool 3.</strong> Betting your beliefs only produces useful calibration data if the record of what you actually predicted survives contact with the outcome — which is what killing resulting on purpose exists to guarantee.</li>
+      <li><strong>Tool 3 needs Tool 2.</strong> An honest record still can't catch what you can't see about your own reasoning — motivated reasoning defeats introspection from the inside — so the truthseeking pod is the check that operates from outside your own head.</li>
+      <li><strong>All three need Tool 4.</strong> They still have to survive the moment of maximum emotional pressure, which is exactly what mental time travel protects against — moving the decision to a vantage point where panic, sunk cost, and temporal discounting have less leverage.</li>
+    </ul>
     <p>Skip any one and the loop quietly degrades: calibration without a clean record just becomes a more sophisticated version of resulting; a truthseeking pod without a real record to review argues about memories instead of facts; and even a perfect decision process collapses under enough same-day pressure if nothing forces a pause first.</p>
     <p class="soft">For someone running a company rather than reporting to one, almost every consequential call — a pricing decision, a hire, whether to keep pushing a channel that hasn't converted yet, how to read an investor's silence — is a bet made with a fraction of the relevant information, under exactly the kind of pressure the book warns about. A one-line decision journal costs a few minutes and turns "did that GTM experiment work" from a vibe into a dataset. A single truthseeking partner — a co-founder, an advisor, anyone with context and explicit license to disagree — is often the only check against resulting on your own hardest calls, because founders are usually the last people able to see their own motivated reasoning about a project they're emotionally invested in keeping alive.</p>
   </section>
