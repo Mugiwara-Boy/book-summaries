@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Influence</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+  :root {
+    --paper: #EDEEE8;
+    --surface: #F8F8F3;
+    --ink: #1C2321;
+    --ink-soft: #4E564F;
+    --ink-faint: #7C837A;
+    --deep: #2E4057;
+    --deep-soft: rgba(46,64,87,0.08);
+    --deep-line: rgba(46,64,87,0.35);
+    --shallow: #9C6B32;
+    --shallow-soft: rgba(156,107,50,0.09);
+    --line: #D7D8CF;
+    --shadow: none;
+    --pending-red: #B23B3B;
+    --pending-red-soft: rgba(178,59,59,0.08);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #14171a;
+      --surface: #1a1e21;
+      --ink: #E8E6DE;
+      --ink-soft: #ABB0A5;
+      --ink-faint: #767C73;
+      --deep: #8CA4C9;
+      --deep-soft: rgba(140,164,201,0.12);
+      --deep-line: rgba(140,164,201,0.4);
+      --shallow: #D3A468;
+      --shallow-soft: rgba(211,164,104,0.1);
+      --line: #2B302F;
+      --pending-red: #E08585;
+      --pending-red-soft: rgba(224,133,133,0.1);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #14171a;
+    --surface: #1a1e21;
+    --ink: #E8E6DE;
+    --ink-soft: #ABB0A5;
+    --ink-faint: #767C73;
+    --deep: #8CA4C9;
+    --deep-soft: rgba(140,164,201,0.12);
+    --deep-line: rgba(140,164,201,0.4);
+    --shallow: #D3A468;
+    --shallow-soft: rgba(211,164,104,0.1);
+    --line: #2B302F;
+    --pending-red: #E08585;
+    --pending-red-soft: rgba(224,133,133,0.1);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    margin: 0;
+    padding-block: 56px;
+    line-height: 1.65;
+  }
+
+  .page {
+    max-width: 700px;
+    margin: 0 auto;
+    padding-inline: 24px;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+    text-wrap: balance;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  /* ---------- Title block ---------- */
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--deep);
+    font-weight: 600;
+  }
+
+  .title-block { margin-bottom: 44px; }
+
+  .title-block h1 {
+    font-size: clamp(40px, 8vw, 58px);
+    font-weight: 500;
+    font-style: italic;
+    margin-top: 10px;
+    line-height: 1.05;
+  }
+
+  .byline {
+    margin-top: 14px;
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+
+  .byline strong { color: var(--ink); font-weight: 600; }
+
+  .thesis {
+    margin-top: 22px;
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    border-left: 2px solid var(--deep-line);
+    padding-left: 18px;
+  }
+
+  hr.rule {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 48px 0 40px;
+  }
+
+  /* ---------- Section headings ---------- */
+  section { margin-bottom: 8px; }
+
+  .section-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  h2 {
+    font-size: 27px;
+    font-weight: 500;
+    margin-bottom: 18px;
+  }
+
+  h3 { font-size: 18px; font-weight: 600; font-family: 'IBM Plex Sans', sans-serif; }
+
+  p { margin: 0 0 16px; color: var(--ink); }
+  p.soft { color: var(--ink-soft); }
+
+  strong { font-weight: 600; }
+  em { font-style: italic; }
+
+  /* ---------- Mini list ---------- */
+  .mini-list { margin: 0 0 16px; padding-left: 0; list-style: none; }
+  .mini-list li { position: relative; padding-left: 22px; margin-bottom: 10px; color: var(--ink); }
+  .mini-list li:last-child { margin-bottom: 0; }
+  .mini-list li::before { content: "—"; position: absolute; left: 0; color: var(--deep); font-weight: 600; }
+  .mini-list li strong { font-weight: 600; }
+
+  /* ---------- Callout ---------- */
+  .callout {
+    background: var(--deep-soft);
+    border-left: 3px solid var(--deep);
+    padding: 18px 20px;
+    border-radius: 2px;
+    margin: 0 0 20px;
+    font-size: 15.5px;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* ---------- Philosophy grid ---------- */
+  .phil-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 22px 0 28px;
+  }
+  @media (max-width: 520px) {
+    .phil-grid { grid-template-columns: 1fr; }
+  }
+  .phil-card {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    padding: 16px 18px;
+  }
+  .phil-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--deep);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .phil-card p { font-size: 14.5px; margin-bottom: 8px; color: var(--ink-soft); }
+  .phil-card .ex { font-size: 13.5px; font-style: italic; color: var(--ink-faint); margin-bottom: 0; }
+
+  /* ---------- Rule blocks ---------- */
+  .rule-block { margin-bottom: 36px; }
+  .rule-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .rule-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--surface);
+    background: var(--deep);
+    padding: 3px 9px;
+    flex-shrink: 0;
+    letter-spacing: 0.03em;
+  }
+  .rule-head h3 {
+    font-family: 'Newsreader', serif;
+    font-size: 24px;
+    font-weight: 500;
+  }
+
+  /* ---------- Shallow marker ---------- */
+  .shallow-note {
+    background: var(--shallow-soft);
+    border-left: 3px solid var(--shallow);
+    padding: 14px 18px;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    margin: 4px 0 20px;
+  }
+  .shallow-note .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--shallow);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    margin-top: 52px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--ink-faint);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  ::selection { background: var(--deep-soft); }
+
+  /* ---------- Diagrams ---------- */
+  .diagram-scroll {
+    margin: 0 0 10px;
+  }
+  .diagram-scroll svg {
+    width: 100%;
+    max-width: 100%;
+    display: block;
+    height: auto;
+  }
+  figure.diagram { margin: 0 0 40px; }
+  figure.diagram figcaption {
+    margin-top: 12px;
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 560px;
+  }
+
+  svg text { font-family: 'IBM Plex Sans', sans-serif; }
+  .dia-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .08em; fill: var(--ink-faint); text-transform: uppercase; }
+  .dia-title { font-weight: 600; font-size: 12.5px; fill: var(--ink); }
+  .dia-sub { font-size: 10.5px; fill: var(--ink-soft); }
+  .dia-tiny { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; fill: var(--ink-faint); letter-spacing: .03em; }
+  .dia-tag-shallow { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; fill: var(--shallow); letter-spacing: .04em; text-transform: uppercase; }
+  .dia-hub-title { font-weight: 700; font-size: 13px; fill: var(--deep); letter-spacing: .03em; }
+  .dia-title-lg { font-weight: 700; font-size: 13.5px; fill: var(--deep); }
+  .dia-target { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; font-weight: 600; fill: var(--deep); letter-spacing: .03em; }
+  .dia-feedback-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; fill: var(--deep); font-weight: 600; letter-spacing: .02em; }
+  .dia-tag-danger { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; fill: var(--pending-red); letter-spacing: .04em; text-transform: uppercase; font-weight: 700; }
+  .dia-axis { font-family: 'IBM Plex Mono', monospace; font-size: 10px; fill: var(--ink-faint); letter-spacing: .06em; text-transform: uppercase; }
+
+  /* ---------- Actionables ---------- */
+  .action-progress {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 22px 0 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .action-progress-count { flex-shrink: 0; white-space: nowrap; }
+  .action-progress-count strong { color: var(--ink); font-weight: 600; }
+  .action-progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--line);
+    position: relative;
+    max-width: 220px;
+  }
+  .action-progress-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: var(--deep);
+  }
+  .action-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 12px 0 8px;
+  }
+  .action-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .action-item[data-status="done"] { border-color: var(--deep-line); }
+  .action-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--deep);
+    background: var(--deep-soft);
+    padding: 2px 8px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    letter-spacing: .02em;
+  }
+  .action-text {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink);
+    flex: 1;
+  }
+  .action-text strong { font-weight: 600; }
+  .action-item[data-status="done"] .action-text { color: var(--ink-soft); }
+  .action-check {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--line);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .action-item[data-status="done"] .action-check {
+    background: var(--deep);
+    border-color: var(--deep);
+    color: var(--surface);
+  }
+  .action-item[data-status="done"] .action-check::after { content: "✓"; }
+  .action-item[data-status="pending"] .action-check {
+    background: var(--pending-red-soft);
+    border-color: var(--pending-red);
+    color: var(--pending-red);
+  }
+  .action-item[data-status="pending"] .action-check::after { content: "✗"; }
+  .dia-line-neutral { stroke: var(--ink-faint); stroke-width: 1.3; fill: none; }
+  .dia-line-deep { stroke: var(--deep); stroke-width: 1.3; fill: none; stroke-dasharray: 5,4; }
+  .dia-line-output { stroke: var(--ink); stroke-width: 1.8; fill: none; stroke-linejoin: round; }
+  .dia-guide { stroke: var(--ink-faint); stroke-width: 1; stroke-dasharray: 3,3; opacity: .5; }
+  .dia-guide-strong { stroke: var(--shallow); stroke-width: 1.3; stroke-dasharray: 4,3; }
+  .dia-box-neutral { fill: var(--surface); stroke: var(--ink-faint); stroke-width: 1; }
+  .dia-box-hub { fill: var(--deep-soft); stroke: var(--deep); stroke-width: 1.5; }
+  .dia-box-output { fill: var(--surface); stroke: var(--deep); stroke-width: 1.2; }
+  .dia-box-danger { fill: var(--pending-red-soft); stroke: var(--pending-red); stroke-width: 1.5; }
+  .dia-shade { fill: var(--shallow-soft); stroke: none; }
+
+  .site-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 36px; padding-bottom: 16px; border-bottom: 1px solid var(--line); font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+  .site-nav-home { color: var(--ink); font-weight: 600; text-decoration: none; letter-spacing: .02em; }
+  .site-nav-home:hover { color: var(--deep); }
+  .site-nav-sep { color: var(--ink-faint); }
+  .site-nav-genres { display: flex; flex-wrap: wrap; gap: 8px; }
+  .genre-pill { text-decoration: none; padding: 3px 10px; border: 1px solid var(--line); color: var(--ink-soft); letter-spacing: .03em; text-transform: uppercase; font-size: 10.5px; }
+  .genre-pill:hover { border-color: var(--deep-line); color: var(--ink); }
+  .genre-pill.active { background: var(--deep); border-color: var(--deep); color: var(--surface); }
+  .site-nav-crumb { color: var(--ink-faint); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .03em; }
+  .site-nav-crumb a { text-decoration: none; color: var(--ink-soft); }
+  .site-nav-crumb a:hover { color: var(--deep); }
+</style>
+
+</head>
+<body>
+
+<div class="page">
+
+  <nav class="site-nav">
+    <a class="site-nav-home" href="../../">Book Summaries</a>
+    <span class="site-nav-sep">·</span>
+    <span class="site-nav-genres">
+      <a class="genre-pill" href="../../self-improvement/">Self-Improvement</a>
+      <a class="genre-pill active" href="../">Psychology &amp; Persuasion</a>
+    </span>
+    <span class="site-nav-sep">·</span>
+    <span class="site-nav-crumb"><a href="../">Psychology &amp; Persuasion</a> / Influence</span>
+  </nav>
+
+  <div class="title-block">
+    <span class="eyebrow">Book Notes — 03</span>
+    <h1>Influence</h1>
+    <div class="byline"><strong>Robert B. Cialdini</strong> — The Psychology of Persuasion, New and Expanded Edition (2021; first published 1984)</div>
+    <p class="thesis">People rarely weigh every fact before saying yes. They react to a handful of reliable cues, and anyone who controls those cues can make the yes nearly automatic.</p>
+  </div>
+
+  <section>
+    <span class="section-tag">01 — The Core Idea</span>
+    <h2>Click, whirr: the yes that runs itself</h2>
+    <p>Cialdini, a social psychologist at Arizona State, wrote the book after admitting he was an easy mark. He was the person who bought what he didn't need from salespeople and gave to causes he hadn't heard of. To understand why, he spent about three years undercover in the training programmes of the people who persuade for a living: car dealers, door-to-door sellers, fundraisers, advertisers and recruiters. He found that the endless variety of tactics drew on only a few psychological principles. The 1984 edition named six. The 2021 edition adds a seventh.</p>
+    <p>The principles work because of something animal behaviourists call <strong>fixed-action patterns</strong>. A mother turkey cares for her chicks only when she hears a “cheep-cheep” sound. A deaf turkey ignores, and even attacks, her own young. A stuffed polecat, the turkey's natural enemy, gets mothered as long as it plays a recording of that sound. One feature of the situation triggers the whole behaviour, like pressing play on a tape: <em>click</em>, and the tape runs, <em>whirr</em>.</p>
+    <p>Humans run tapes too, and for good reason. Life is too fast and too complex to analyse every decision, so we lean on shortcuts like “expensive means good”, “experts are usually right” and “if everyone's doing it, it's probably fine”. They are right most of the time, which is exactly what makes them exploitable. Cialdini's favourite example is a jewellery shop owner in Arizona who couldn't move a case of turquoise. Leaving on a trip, she scribbled a note telling an employee to sell everything in the case at half price. The employee read the “½” as “2”, doubled the prices, and the stock sold out. Tourists who couldn't judge turquoise used price as a stand-in for quality.</p>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <span class="section-tag">02 — The Mechanism</span>
+    <h2>Two quiet amplifiers</h2>
+    <p>Before the seven principles, the book shows two effects that sit underneath many of them.</p>
+    <div class="callout">
+      <p><strong>The power of “because”</strong> (Ellen Langer's copier study): people asking to cut a queue at a copier were let in about 60% of the time with no reason. With a real reason (“because I'm in a rush”) it was about 94%. With an empty one (“because I have to make some copies”) it was still about 93%. For small requests, the word “because” triggers compliance almost regardless of what follows it.</p>
+    </div>
+    <p><strong>The contrast principle:</strong> we judge things relative to what we saw just before. A clothing salesman sells the expensive suit first, so the sweater looks cheap. An estate agent shows two run-down “setup” houses before the one they want to sell. Nothing about the product changes, only the reference point. The trick leaves no trace, because the buyer believes they reached the judgement on their own.</p>
+    <p>Together these explain why the seven levers below are so hard to resist. Each one triggers a shortcut that is usually correct, inside a frame the persuader controls. You can't stop every one by being smarter. You defend yourself by noticing when a shortcut is being faked.</p>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <span class="section-tag">03 — The Seven Levers</span>
+    <h2>Seven shortcuts, each with a defense</h2>
+    <p class="soft">Each lever is described first as a force, then with the move that disarms it when someone fakes it.</p>
+  </section>
+
+  <div class="rule-block">
+    <div class="rule-head">
+      <span class="rule-num">LEVER 01</span>
+      <h3>Reciprocation</h3>
+    </div>
+    <p>Every human society teaches the same rule: if someone does something for you, you owe them. Cialdini calls it one of the glues of civilisation, because it let people give first without fear of losing out. It is also easy to exploit. In Dennis Regan's 1971 study, a stranger who handed subjects an unasked-for Coke later sold them about <strong>twice as many raffle tickets</strong> as one who gave nothing, and how much they liked him barely mattered. The debt drove it. The Hare Krishna airport “gift” of a flower worked the same way.</p>
+    <p>Two details make it sharper. The gift works best when it is <strong>meaningful, unexpected and personal</strong>. In a restaurant study, one mint with the bill raised tips about 3%, two mints about 14%, and one mint followed by the waiter turning back to offer a second “just for you” raised them about 23%. Second, a <strong>concession counts as a gift</strong>. In “rejection-then-retreat”, you make a large request, accept the no, then retreat to the smaller one you wanted. In Cialdini's zoo study, asking students to chaperone delinquent kids for a day got 17% agreement cold. After first asking them to volunteer two years as counsellors, it got 50%. The retreat felt like a favour, and the smaller ask looked small by contrast.</p>
+    <div class="shallow-note"><span class="tag">How to say no</span>Accept real favours gratefully. When a “gift” turns out to be a sales device, re-label it in your head as a tactic. The rule obliges you to return favours, not tactics.</div>
+  </div>
+  <div class="rule-block">
+    <div class="rule-head">
+      <span class="rule-num">LEVER 02</span>
+      <h3>Liking</h3>
+    </div>
+    <p>We say yes to people we like, and liking is easy to manufacture. Joe Girard, the Guinness record holder for car sales, mailed every past customer a card each month that said little more than that he liked them. Tupperware parties sell through the hostess's friendship, not the product.</p>
+    <p>The book lists what drives liking: <strong>physical attractiveness</strong> (a halo that makes people seem smarter and kinder), <strong>similarity</strong> (in background, interests and even dress), <strong>compliments</strong> (which work even when we suspect them), <strong>contact and cooperation</strong> toward a shared goal (the jigsaw classroom ended hostilities that mere contact had made worse), and <strong>association</strong> with good things, which is why messengers get blamed for bad news and brands rent celebrities.</p>
+    <div class="shallow-note"><span class="tag">How to say no</span>Don't try to spot each tactic. Notice when you've come to like someone unusually fast, then mentally separate the person from the deal and judge the offer alone.</div>
+  </div>
+  <div class="rule-block">
+    <div class="rule-head">
+      <span class="rule-num">LEVER 03</span>
+      <h3>Social Proof</h3>
+    </div>
+    <p>When we don't know what is right, we look at what people like us are doing. That's why canned laughter works even though everyone says they hate it. Social proof is most powerful under two conditions: <strong>uncertainty</strong>, when the situation is new or ambiguous, and <strong>similarity</strong>, when the crowd looks like us. Bystanders fail to help in emergencies partly because each person reads the others' calm as proof that nothing is wrong. The cure is to single out one person and give them a specific task.</p>
+    <p>It can also backfire. At Arizona's Petrified Forest, a sign deploring how <em>many</em> visitors stole wood increased theft, because it told readers stealing was normal. In hotel studies by Cialdini's team, telling guests that most previous guests <em>in that same room</em> reused their towels beat the standard environmental appeal.</p>
+    <div class="shallow-note"><span class="tag">How to say no</span>Watch for faked evidence (staged testimonials, inflated counts). Remember that a crowd can be copying itself, so check the facts at least once.</div>
+  </div>
+  <div class="rule-block">
+    <div class="rule-head">
+      <span class="rule-num">LEVER 04</span>
+      <h3>Authority</h3>
+    </div>
+    <p>Milgram's obedience studies are the book's darkest proof: about two-thirds of ordinary people kept delivering what they believed were dangerous shocks because a man in a lab coat told them to. Deference to authority is usually sensible. But people respond to the <strong>symbols</strong> of authority (titles, uniforms, expensive trappings) almost as strongly as to the substance. In one hospital study, nearly every nurse called by an unknown “doctor” started to give a clearly unsafe dose of an unapproved drug.</p>
+    <p>The subtle point for anyone selling is about <strong>trustworthiness</strong>. An expert who first admits a small weakness in their own case is believed more on everything that follows, because arguing against your own interest signals honesty.</p>
+    <div class="shallow-note"><span class="tag">How to say no</span>Ask two questions. Is this person truly an expert on this specific thing? And how truthful can I expect them to be, given what they gain if I agree?</div>
+  </div>
+  <div class="rule-block">
+    <div class="rule-head">
+      <span class="rule-num">LEVER 05</span>
+      <h3>Scarcity</h3>
+    </div>
+    <p>Things look more valuable when they are less available, and the thought of losing something moves us more than the thought of gaining the same thing. In Stephen Worchel's cookie study, identical cookies were rated more desirable from a jar holding two than from a jar holding ten. They were rated higher still when the jar went from ten to two because other people had wanted them. Scarcity caused by <strong>competition</strong> is the strongest kind. Information works the same way. In one beef importer's experiment, buyers told about a coming shortage, and told that the news was <strong>exclusive</strong>, ordered about six times as much as buyers told about the shortage alone.</p>
+    <p>Scarcity also explains reactance: when a freedom is taken away, we want it more. Banned books sell. Forbidden love intensifies, which Cialdini calls the Romeo and Juliet effect.</p>
+    <div class="shallow-note"><span class="tag">How to say no</span>The tell is a rush of urgency that makes it hard to think. Use it as a cue to stop. Then ask why you want the thing. The scarce cookies did not taste any better. If you want to use something rather than just own it, scarcity tells you nothing about its value.</div>
+  </div>
+  <div class="rule-block">
+    <div class="rule-head">
+      <span class="rule-num">LEVER 06</span>
+      <h3>Commitment &amp; Consistency</h3>
+    </div>
+    <p>Once we take a stand, we feel pressure to behave in line with it, because consistency is admired and saves thinking. Small commitments therefore open the door to big ones. In Freedman and Fraser's study, residents who had agreed to display a tiny “drive safely” sign later agreed to a huge, ugly billboard on their lawn about <strong>76% of the time</strong>, against about 17% for people asked cold. The first yes changed how they saw themselves.</p>
+    <p>The commitments that stick hardest are <strong>active</strong> (written beats spoken), <strong>public</strong>, <strong>effortful</strong> and <strong>owned</strong>, meaning made without a large outside reward, so people credit themselves. This is how Chinese captors in the Korean War got prisoners to write small pro-communist statements, and why sales teams get customers to fill in the order form themselves. The dark version is the lowball. A car buyer commits at a great price, builds new reasons to want the car, and keeps those reasons after the price “error” is fixed.</p>
+    <div class="shallow-note"><span class="tag">How to say no</span>Two signals help. The stomach signal is feeling trapped into something you know is wrong. The heart-of-hearts signal comes from asking: knowing what I know now, would I make the same choice again? If the answer is no, the earlier commitment owes you nothing.</div>
+  </div>
+  <div class="rule-block">
+    <div class="rule-head">
+      <span class="rule-num">LEVER 07</span>
+      <h3>Unity</h3>
+    </div>
+    <p>The principle added in 2021 is about <strong>shared identity</strong>, not similarity. The question is not “are you like me?” but “are you one of us?” Unity comes from <strong>being together</strong> (family, place, tribe) and from <strong>acting together</strong> (moving in sync, suffering together, building something together). People favour, trust and help those inside their “we” far more than polite similarity would predict.</p>
+    <p>Its most usable form is co-creation. When people are asked for <strong>advice</strong> on a plan, rather than their opinion or expectations, they feel more merged with it and become more supportive. Advice puts them on the same side of the table.</p>
+    <div class="shallow-note"><span class="tag">How to say no</span>Ask whether the “we” is real and lasting, or a costume put on for this one request.</div>
+  </div>
+
+  <hr class="rule">
+
+  <section>
+    <span class="section-tag">04 — Synthesis</span>
+    <h2>Detective, not smuggler</h2>
+    <p>The levers stack. A good pitch rarely uses only one. A free sample (reciprocation) given by a likeable rep (liking) with “our most popular” on the label (social proof) and “only while stocks last” (scarcity) is four levers pulling the same way. Cialdini's ethical line is not about whether to use them. It is about whether they are <strong>truly present</strong>. A detective of influence finds the real social proof, the real expertise and the real scarcity in an offer and points to them. A smuggler fabricates them. Smuggling can win the sale, but it damages the shortcuts everyone relies on. Cialdini argues people should push back hard on fakers, because a society that can't trust its shortcuts has to think through every decision from scratch.</p>
+    <ul class="mini-list">
+      <li><strong>Levers you earn over time:</strong> social proof, authority and unity can't be faked for long. They come from real results, real expertise and a shared identity, and they compound.</li>
+      <li><strong>Levers you choose in the moment:</strong> reciprocation, contrast, “because”, small commitments and honest scarcity are framing decisions you make in every email and meeting.</li>
+      <li><strong>The defense is one habit:</strong> when you feel an unusually quick yes, ask which shortcut just fired, and whether the cue was real.</li>
+    </ul>
+    <p class="soft">For a founder selling a new category, the biggest point is that prospects are <strong>uncertain</strong>, and uncertainty is when social proof from similar buyers is strongest. One named result from an exhibitor in the same industry will do more than any feature list. The cheapest lever is reciprocation done properly, meaning a follow-up that gives something useful before it asks for anything. The most underused is unity, because asking a prospect, advisor or investor for advice turns them from judges of your plan into co-authors of it.</p>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <span class="section-tag">05 — Mapped Out</span>
+    <h2>The whole argument, as one chart</h2>
+    <p class="soft">From the claim, through the mechanism, to the seven levers (each with its trigger, what it does and how to defend against it), to the ethics test and the payoff. Read top to bottom and the chart rebuilds the argument on its own.</p>
+  </section>
+
+  <figure class="diagram">
+    <div class="diagram-scroll">
+      <svg viewBox="0 0 600 1620" role="img" aria-label="Flowchart: we say yes on autopilot because busy minds decide on one cue. Fixed-action patterns and framing tricks show the mechanism. Compliance professionals found seven levers: reciprocation, liking, social proof, authority, scarcity, commitment and consistency, and unity, each with its trigger and its defense. They converge on one ethics test, detective not smuggler, which produces faster cleaner yeses and trust that compounds, feeding back into the levers."><defs>
+<marker id="arrow-a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-faint)"/></marker>
+<marker id="arrow-b3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--deep)"/></marker>
+</defs><rect x="25" y="20" width="550" height="110" rx="6" class="dia-box-hub"/>
+<text x="300" y="42" text-anchor="middle" class="dia-label">THE CLAIM</text>
+<text x="300" y="63" text-anchor="middle" class="dia-title-lg">We say yes on autopilot</text>
+<text x="300" y="84" text-anchor="middle" class="dia-sub">Busy minds decide on one cue instead of the full picture.</text>
+<text x="300" y="98" text-anchor="middle" class="dia-sub">The cue is usually right, so whoever fakes it gets the yes.</text>
+<line x1="300" y1="130" x2="300" y2="145" class="dia-line-neutral"/>
+<line x1="155" y1="145" x2="445" y2="145" class="dia-line-neutral"/>
+<line x1="155" y1="145" x2="155" y2="159" class="dia-line-neutral" marker-end="url(#arrow-a3)"/>
+<line x1="445" y1="145" x2="445" y2="159" class="dia-line-neutral" marker-end="url(#arrow-a3)"/>
+<rect x="25" y="160" width="260" height="150" rx="5" class="dia-box-neutral"/>
+<text x="155" y="182" text-anchor="middle" class="dia-label">CLICK, WHIRR</text>
+<text x="155" y="203" text-anchor="middle" class="dia-title">Fixed-action patterns</text>
+<text x="155" y="225" text-anchor="middle" class="dia-sub">One trigger plays the whole tape: a</text>
+<text x="155" y="239" text-anchor="middle" class="dia-sub">turkey mothers anything that cheeps,</text>
+<text x="155" y="253" text-anchor="middle" class="dia-sub">even a stuffed predator.</text>
+<text x="155" y="277" text-anchor="middle" class="dia-tiny">→ humans run the same tapes</text>
+<rect x="315" y="160" width="260" height="150" rx="5" class="dia-box-neutral"/>
+<text x="445" y="182" text-anchor="middle" class="dia-label">FRAMING TRICKS</text>
+<text x="445" y="203" text-anchor="middle" class="dia-title">Contrast + “because”</text>
+<text x="445" y="225" text-anchor="middle" class="dia-sub">A big number first makes the next look</text>
+<text x="445" y="239" text-anchor="middle" class="dia-sub">small. Any reason, even an empty one,</text>
+<text x="445" y="253" text-anchor="middle" class="dia-sub">lifts compliance.</text>
+<text x="445" y="277" text-anchor="middle" class="dia-tiny">→ the offer never changed, the frame did</text>
+<line x1="155" y1="310" x2="155" y2="325" class="dia-line-neutral"/>
+<line x1="445" y1="310" x2="445" y2="325" class="dia-line-neutral"/>
+<line x1="155" y1="325" x2="445" y2="325" class="dia-line-neutral"/>
+<line x1="300" y1="325" x2="300" y2="339" class="dia-line-neutral" marker-end="url(#arrow-a3)"/>
+<rect x="25" y="340" width="550" height="100" rx="5" class="dia-box-neutral"/>
+<text x="300" y="362" text-anchor="middle" class="dia-label">WHY IT MATTERS</text>
+<text x="300" y="383" text-anchor="middle" class="dia-title">Compliance pros found the triggers by trial and error</text>
+<text x="300" y="404" text-anchor="middle" class="dia-sub">Cialdini went undercover in sales, fundraising and ad training.</text>
+<text x="300" y="418" text-anchor="middle" class="dia-sub">The same seven levers kept showing up.</text>
+<line x1="300" y1="440" x2="300" y2="460" class="dia-line-neutral"/>
+<line x1="155" y1="460" x2="445" y2="460" class="dia-line-neutral"/>
+<line x1="155" y1="460" x2="155" y2="479" class="dia-line-neutral" marker-end="url(#arrow-a3)"/>
+<line x1="445" y1="460" x2="445" y2="479" class="dia-line-neutral" marker-end="url(#arrow-a3)"/>
+<rect x="25" y="480" width="260" height="160" rx="5" class="dia-box-neutral"/>
+<text x="155" y="503" text-anchor="middle" class="dia-label">LEVER 1</text>
+<text x="155" y="525" text-anchor="middle" class="dia-title">Reciprocation</text>
+<text x="155" y="544" text-anchor="middle" class="dia-target">trigger: I OWE YOU</text>
+<text x="155" y="566" text-anchor="middle" class="dia-sub">Give first, unasked. Or ask big, then</text>
+<text x="155" y="580" text-anchor="middle" class="dia-sub">retreat: the concession gets repaid.</text>
+<text x="155" y="604" text-anchor="middle" class="dia-tiny">defense: call a tactic a tactic,</text>
+<text x="155" y="618" text-anchor="middle" class="dia-tiny">you owe nothing to a sales device</text>
+<rect x="315" y="480" width="260" height="160" rx="5" class="dia-box-neutral"/>
+<text x="445" y="503" text-anchor="middle" class="dia-label">LEVER 2</text>
+<text x="445" y="525" text-anchor="middle" class="dia-title">Liking</text>
+<text x="445" y="544" text-anchor="middle" class="dia-target">trigger: I LIKE YOU</text>
+<text x="445" y="566" text-anchor="middle" class="dia-sub">Similarity, compliments, working on a</text>
+<text x="445" y="580" text-anchor="middle" class="dia-sub">shared goal, good association.</text>
+<text x="445" y="604" text-anchor="middle" class="dia-tiny">defense: notice liking someone fast,</text>
+<text x="445" y="618" text-anchor="middle" class="dia-tiny">then judge the deal, not the person</text>
+<line x1="155" y1="640" x2="155" y2="660" class="dia-line-neutral"/>
+<line x1="445" y1="640" x2="445" y2="660" class="dia-line-neutral"/>
+<line x1="155" y1="660" x2="445" y2="660" class="dia-line-neutral"/>
+<line x1="155" y1="660" x2="155" y2="679" class="dia-line-neutral" marker-end="url(#arrow-a3)"/>
+<line x1="445" y1="660" x2="445" y2="679" class="dia-line-neutral" marker-end="url(#arrow-a3)"/>
+<rect x="25" y="680" width="260" height="160" rx="5" class="dia-box-neutral"/>
+<text x="155" y="703" text-anchor="middle" class="dia-label">LEVER 3</text>
+<text x="155" y="725" text-anchor="middle" class="dia-title">Social Proof</text>
+<text x="155" y="744" text-anchor="middle" class="dia-target">trigger: PEOPLE LIKE ME DO IT</text>
+<text x="155" y="766" text-anchor="middle" class="dia-sub">Strongest when we are unsure and when</text>
+<text x="155" y="780" text-anchor="middle" class="dia-sub">the crowd looks like us.</text>
+<text x="155" y="804" text-anchor="middle" class="dia-tiny">defense: check the evidence is real</text>
+<text x="155" y="818" text-anchor="middle" class="dia-tiny">and the crowd isn&#x27;t just copying</text>
+<rect x="315" y="680" width="260" height="160" rx="5" class="dia-box-neutral"/>
+<text x="445" y="703" text-anchor="middle" class="dia-label">LEVER 4</text>
+<text x="445" y="725" text-anchor="middle" class="dia-title">Authority</text>
+<text x="445" y="744" text-anchor="middle" class="dia-target">trigger: THE EXPERT SAYS SO</text>
+<text x="445" y="766" text-anchor="middle" class="dia-sub">Titles, uniforms, trappings. Admitting a</text>
+<text x="445" y="780" text-anchor="middle" class="dia-sub">weakness first buys trust.</text>
+<text x="445" y="804" text-anchor="middle" class="dia-tiny">defense: is this a real expert, and</text>
+<text x="445" y="818" text-anchor="middle" class="dia-tiny">how honest can they afford to be?</text>
+<line x1="155" y1="840" x2="155" y2="860" class="dia-line-neutral"/>
+<line x1="445" y1="840" x2="445" y2="860" class="dia-line-neutral"/>
+<line x1="155" y1="860" x2="445" y2="860" class="dia-line-neutral"/>
+<line x1="155" y1="860" x2="155" y2="879" class="dia-line-neutral" marker-end="url(#arrow-a3)"/>
+<line x1="445" y1="860" x2="445" y2="879" class="dia-line-neutral" marker-end="url(#arrow-a3)"/>
+<rect x="25" y="880" width="260" height="160" rx="5" class="dia-box-neutral"/>
+<text x="155" y="903" text-anchor="middle" class="dia-label">LEVER 5</text>
+<text x="155" y="925" text-anchor="middle" class="dia-title">Scarcity</text>
+<text x="155" y="944" text-anchor="middle" class="dia-target">trigger: I MIGHT LOSE IT</text>
+<text x="155" y="966" text-anchor="middle" class="dia-sub">Rare, shrinking or exclusive feels worth</text>
+<text x="155" y="980" text-anchor="middle" class="dia-sub">more. Losses outweigh equal gains.</text>
+<text x="155" y="1004" text-anchor="middle" class="dia-tiny">defense: feel the rush, then ask: do</text>
+<text x="155" y="1018" text-anchor="middle" class="dia-tiny">I want to own it or to use it?</text>
+<rect x="315" y="880" width="260" height="160" rx="5" class="dia-box-neutral"/>
+<text x="445" y="903" text-anchor="middle" class="dia-label">LEVER 6</text>
+<text x="445" y="925" text-anchor="middle" class="dia-title">Commitment &amp; Consistency</text>
+<text x="445" y="944" text-anchor="middle" class="dia-target">trigger: I SAID I WOULD</text>
+<text x="445" y="966" text-anchor="middle" class="dia-sub">A small yes grows. Active, public, written</text>
+<text x="445" y="980" text-anchor="middle" class="dia-sub">and effortful commitments stick.</text>
+<text x="445" y="1004" text-anchor="middle" class="dia-tiny">defense: knowing what I know now,</text>
+<text x="445" y="1018" text-anchor="middle" class="dia-tiny">would I choose this again?</text>
+<line x1="155" y1="1040" x2="155" y2="1060" class="dia-line-neutral"/>
+<line x1="445" y1="1040" x2="445" y2="1060" class="dia-line-neutral"/>
+<line x1="155" y1="1060" x2="445" y2="1060" class="dia-line-neutral"/>
+<line x1="300" y1="1060" x2="300" y2="1079" class="dia-line-neutral" marker-end="url(#arrow-a3)"/>
+<rect x="150" y="1080" width="300" height="160" rx="5" class="dia-box-neutral"/>
+<text x="300" y="1103" text-anchor="middle" class="dia-label">LEVER 7 · NEW IN 2021</text>
+<text x="300" y="1125" text-anchor="middle" class="dia-title">Unity</text>
+<text x="300" y="1144" text-anchor="middle" class="dia-target">trigger: YOU ARE ONE OF US</text>
+<text x="300" y="1166" text-anchor="middle" class="dia-sub">Shared identity: family, place, acting</text>
+<text x="300" y="1180" text-anchor="middle" class="dia-sub">together. Asking advice pulls people in.</text>
+<text x="300" y="1204" text-anchor="middle" class="dia-tiny">defense: is the “we” real, or a</text>
+<text x="300" y="1218" text-anchor="middle" class="dia-tiny">costume worn for this one ask?</text>
+<line x1="300" y1="1240" x2="300" y2="1279" class="dia-line-neutral" marker-end="url(#arrow-a3)"/>
+<rect x="110" y="1280" width="380" height="120" rx="6" class="dia-box-hub"/>
+<text x="300" y="1302" text-anchor="middle" class="dia-label">THE CONVERGENCE</text>
+<text x="300" y="1325" text-anchor="middle" class="dia-title-lg">DETECTIVE, NOT SMUGGLER</text>
+<text x="300" y="1346" text-anchor="middle" class="dia-sub">Point to levers that are truly in the offer.</text>
+<text x="300" y="1360" text-anchor="middle" class="dia-sub">Faked cues win once and poison the shortcut.</text>
+<text x="300" y="1383" text-anchor="middle" class="dia-tiny">(the ethics test for every lever)</text>
+<line x1="300" y1="1400" x2="300" y2="1420" class="dia-line-neutral"/>
+<line x1="155" y1="1420" x2="445" y2="1420" class="dia-line-neutral"/>
+<line x1="155" y1="1420" x2="155" y2="1439" class="dia-line-neutral" marker-end="url(#arrow-a3)"/>
+<line x1="445" y1="1420" x2="445" y2="1439" class="dia-line-neutral" marker-end="url(#arrow-a3)"/>
+<rect x="25" y="1440" width="260" height="110" rx="5" class="dia-box-output"/>
+<text x="155" y="1462" text-anchor="middle" class="dia-label">RESULT · 1</text>
+<text x="155" y="1484" text-anchor="middle" class="dia-title-lg">Faster, cleaner yeses</text>
+<text x="155" y="1505" text-anchor="middle" class="dia-sub">people decide on real signals</text>
+<text x="155" y="1519" text-anchor="middle" class="dia-sub">without feeling worked</text>
+<rect x="315" y="1440" width="260" height="110" rx="5" class="dia-box-output"/>
+<text x="445" y="1462" text-anchor="middle" class="dia-label">RESULT · 2</text>
+<text x="445" y="1484" text-anchor="middle" class="dia-title-lg">Trust that compounds</text>
+<text x="445" y="1505" text-anchor="middle" class="dia-sub">every honest cue makes the next</text>
+<text x="445" y="1519" text-anchor="middle" class="dia-sub">one land harder</text>
+<line x1="155" y1="1550" x2="155" y2="1567" class="dia-line-deep"/>
+<line x1="12" y1="1567" x2="155" y2="1567" class="dia-line-deep"/>
+<line x1="12" y1="1567" x2="12" y2="960" class="dia-line-deep"/>
+<line x1="12" y1="960" x2="24" y2="960" class="dia-line-deep" marker-end="url(#arrow-b3)"/>
+<line x1="445" y1="1550" x2="445" y2="1567" class="dia-line-deep"/>
+<line x1="445" y1="1567" x2="588" y2="1567" class="dia-line-deep"/>
+<line x1="588" y1="1567" x2="588" y2="960" class="dia-line-deep"/>
+<line x1="588" y1="960" x2="576" y2="960" class="dia-line-deep" marker-end="url(#arrow-b3)"/>
+<text x="300" y="1590" text-anchor="middle" class="dia-feedback-label">compounds → reputation becomes its own</text>
+<text x="300" y="1604" text-anchor="middle" class="dia-feedback-label">social proof and authority next time</text></svg>
+    </div>
+    <figcaption>The full shape of the argument: automatic yeses, the mechanism behind them, seven levers that trigger them, one ethics test for using them, and the reputation payoff that makes the next yes easier.</figcaption>
+  </figure>
+
+  <figure class="diagram">
+    <div class="diagram-scroll">
+      <svg viewBox="0 0 600 750" role="img" aria-label="Close-up: the seven levers mapped onto five stages of a Pravah deal: booth walk-in uses liking and unity, follow-up email uses reciprocation and commitment, demo uses social proof and authority, pilot proposal uses rejection-then-retreat and contrast, close uses honest scarcity and written commitment."><defs>
+<marker id="arrow-a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-faint)"/></marker>
+<marker id="arrow-b4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--deep)"/></marker>
+</defs><rect x="25" y="20" width="550" height="118" rx="5" class="dia-box-hub"/>
+<text x="300" y="42" text-anchor="middle" class="dia-label">STAGE 1 · BOOTH WALK-IN</text>
+<text x="300" y="62" text-anchor="middle" class="dia-title">Lever: Liking + Unity</text>
+<text x="300" y="82" text-anchor="middle" class="dia-sub">What: find one real shared thread fast, and ask for their view,</text>
+<text x="300" y="96" text-anchor="middle" class="dia-sub">not their budget.</text>
+<text x="300" y="114" text-anchor="middle" class="dia-tiny">Why: people say yes to those they see as like them, and asking</text>
+<text x="300" y="128" text-anchor="middle" class="dia-tiny">for advice makes them a co-owner of the idea.</text>
+<line x1="300" y1="138" x2="300" y2="167" class="dia-line-neutral" marker-end="url(#arrow-a4)"/>
+<rect x="25" y="168" width="550" height="118" rx="5" class="dia-box-neutral"/>
+<text x="300" y="190" text-anchor="middle" class="dia-label">STAGE 2 · FOLLOW-UP EMAIL</text>
+<text x="300" y="210" text-anchor="middle" class="dia-title">Lever: Reciprocation + Commitment</text>
+<text x="300" y="230" text-anchor="middle" class="dia-sub">What: give something useful from the conversation first, then</text>
+<text x="300" y="244" text-anchor="middle" class="dia-sub">ask for one small, easy step.</text>
+<text x="300" y="262" text-anchor="middle" class="dia-tiny">Why: an unasked favour creates a pull to return it, and a small</text>
+<text x="300" y="276" text-anchor="middle" class="dia-tiny">yes makes the next, bigger yes feel consistent.</text>
+<line x1="300" y1="286" x2="300" y2="315" class="dia-line-neutral" marker-end="url(#arrow-a4)"/>
+<rect x="25" y="316" width="550" height="118" rx="5" class="dia-box-neutral"/>
+<text x="300" y="338" text-anchor="middle" class="dia-label">STAGE 3 · DEMO</text>
+<text x="300" y="358" text-anchor="middle" class="dia-title">Lever: Social Proof + Authority</text>
+<text x="300" y="378" text-anchor="middle" class="dia-sub">What: show results from exhibitors like them, and name one</text>
+<text x="300" y="392" text-anchor="middle" class="dia-sub">honest limit before the strengths.</text>
+<text x="300" y="410" text-anchor="middle" class="dia-tiny">Why: buyers of a new category are unsure, so they copy peers;</text>
+<text x="300" y="424" text-anchor="middle" class="dia-tiny">an admitted weakness makes every strength believable.</text>
+<line x1="300" y1="434" x2="300" y2="463" class="dia-line-neutral" marker-end="url(#arrow-a4)"/>
+<rect x="25" y="464" width="550" height="118" rx="5" class="dia-box-neutral"/>
+<text x="300" y="486" text-anchor="middle" class="dia-label">STAGE 4 · PILOT PROPOSAL</text>
+<text x="300" y="506" text-anchor="middle" class="dia-title">Lever: Rejection-then-Retreat + Contrast</text>
+<text x="300" y="526" text-anchor="middle" class="dia-sub">What: lay out the full rollout first, then step back to a</text>
+<text x="300" y="540" text-anchor="middle" class="dia-sub">single-show pilot.</text>
+<text x="300" y="558" text-anchor="middle" class="dia-tiny">Why: the step back reads as a concession to repay, and the</text>
+<text x="300" y="572" text-anchor="middle" class="dia-tiny">pilot looks small next to the full plan.</text>
+<line x1="300" y1="582" x2="300" y2="611" class="dia-line-neutral" marker-end="url(#arrow-a4)"/>
+<rect x="25" y="612" width="550" height="118" rx="5" class="dia-box-hub"/>
+<text x="300" y="634" text-anchor="middle" class="dia-label">STAGE 5 · CLOSE</text>
+<text x="300" y="654" text-anchor="middle" class="dia-title">Lever: Honest Scarcity + Written Commitment</text>
+<text x="300" y="674" text-anchor="middle" class="dia-sub">What: name what waiting costs (leads cooling after the show),</text>
+<text x="300" y="688" text-anchor="middle" class="dia-sub">and get the next step written in their own words.</text>
+<text x="300" y="706" text-anchor="middle" class="dia-tiny">Why: losses weigh more than equal gains, and people keep</text>
+<text x="300" y="720" text-anchor="middle" class="dia-tiny">commitments they wrote down themselves.</text></svg>
+    </div>
+    <figcaption>Applied to Pravah: which levers fit each stage of a deal, what to do and why it works. Every lever is used only when it's honestly present, as a detective, not a smuggler.</figcaption>
+  </figure>
+
+  <hr class="rule">
+
+  <section>
+    <span class="section-tag">06 — Do This</span>
+    <h2>Ten actions, not ten insights</h2>
+    <p class="soft">The charts show the shape of the argument. These are the changes to make in your pipeline this week.</p>
+  </section>
+
+  <div class="action-progress">
+    <span class="action-progress-count"><strong>0</strong> / 10 done</span>
+    <span class="action-progress-bar"><span class="action-progress-fill" style="width:0%"></span></span>
+  </div>
+
+  <div class="action-list">
+    <div class="action-item" data-status="pending"><span class="action-num">01</span><span class="action-text"><strong>Give first in every follow-up.</strong> Before any ask, send one thing the prospect can use for their next show, tied to what came up in the conversation. Make it specific to them, unexpected and useful.</span><span class="action-check" title="Pending"></span></div>
+    <div class="action-item" data-status="pending"><span class="action-num">02</span><span class="action-text"><strong>Put a real “because” in every ask.</strong> Every demo request, intro request and investor ask carries one honest reason they would care. Cut any ask that has no reason.</span><span class="action-check" title="Pending"></span></div>
+    <div class="action-item" data-status="pending"><span class="action-num">03</span><span class="action-text"><strong>Ask big, then retreat, on the next pilot conversation.</strong> Present the full multi-show rollout first, then step back to a single-show pilot as the concession.</span><span class="action-check" title="Pending"></span></div>
+    <div class="action-item" data-status="pending"><span class="action-num">04</span><span class="action-text"><strong>Get a small yes at the booth.</strong> Before asking for a meeting, ask for something tiny, like a two-minute look at one past conversation summary. The small yes sets up the bigger one.</span><span class="action-check" title="Pending"></span></div>
+    <div class="action-item" data-status="pending"><span class="action-num">05</span><span class="action-text"><strong>Build one proof point per vertical.</strong> One named exhibitor result for each industry you sell into, so every prospect sees someone like them. Show only real results, and drop any proof point that can&#x27;t be named.</span><span class="action-check" title="Pending"></span></div>
+    <div class="action-item" data-status="pending"><span class="action-num">06</span><span class="action-text"><strong>Name one limit before the strengths in every demo.</strong> Say early and plainly what Pravah doesn&#x27;t do yet. It costs little and makes every claim after it more believable.</span><span class="action-check" title="Pending"></span></div>
+    <div class="action-item" data-status="pending"><span class="action-num">07</span><span class="action-text"><strong>Frame urgency as loss, and only when it&#x27;s true.</strong> Talk about the leads that cool in the days after a show, not features to gain. Never invent deadlines or slots.</span><span class="action-check" title="Pending"></span></div>
+    <div class="action-item" data-status="pending"><span class="action-num">08</span><span class="action-text"><strong>Get the next step written in their words.</strong> At the end of every demo, ask the prospect to put the next step and date in the reply email themselves. A written, owned commitment gets kept.</span><span class="action-check" title="Pending"></span></div>
+    <div class="action-item" data-status="pending"><span class="action-num">09</span><span class="action-text"><strong>Ask for advice, not opinion.</strong> With advisors, investors and design partners, ask what they would advise on a specific decision. It turns them into co-owners of the plan.</span><span class="action-check" title="Pending"></span></div>
+    <div class="action-item" data-status="pending"><span class="action-num">10</span><span class="action-text"><strong>Run the heart-of-hearts check on your own deals this month.</strong> Pick one vendor contract, hire or partnership you committed to early. Ask whether you would choose it again knowing what you know now, and act on the answer.</span><span class="action-check" title="Pending"></span></div>
+  </div>
+
+  <footer>Robert B. Cialdini — Influence, New and Expanded (Harper Business, 2021) · Notes, not excerpts<br><br><a href="../">← More Psychology &amp; Persuasion summaries</a> · <a href="../../">All genres</a></footer>
+
+</div>
+
+</body>
+</html>
